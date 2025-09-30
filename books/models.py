@@ -17,9 +17,13 @@ class Book(models.Model):
     published = models.DateField()
     cover = CloudinaryField('cover', blank=True, null=True)
     genres = models.CharField(max_length=300, blank=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["user"]
 
     def __str__(self):
-        return f"{self.title} by {self.author} on {self.user.username}'s shelf"
+        return f"{self.title} | by {self.author} | {self.user.username}'s shelf"
 
 class Review(models.Model):
     """Represents a user's review of a book including user, rating, content, and posted date."""
@@ -29,6 +33,9 @@ class Review(models.Model):
     content = models.TextField()
     posted_on = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["posted_on"]
+    
     def __str__(self):
         return f"{self.user.username} - {self.book.title} - {self.rating}"
 
@@ -40,5 +47,8 @@ class Comment(models.Model):
     posted_on = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ["posted_on"]
+    
     def __str__(self):
-        return f"{self.user.username} on {self.review.book.title}"
+        return f"Comment: {self.content} by {self.user.username}"
