@@ -1,6 +1,6 @@
 env.py
 .pylintrc
-fixtures/
+books/fixtures/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -221,3 +221,30 @@ __marimo__/
 
 # Django static files (collected)
 staticfiles/
+
+# Django database files
+*.sqlite3
+*.db
+
+# Django media files (user uploads)
+media/
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+*.log
+logs/
