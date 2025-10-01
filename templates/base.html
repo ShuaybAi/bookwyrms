@@ -26,35 +26,45 @@
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}">📚 BookWyrms</a>
+            <a class="navbar-brand" href="{% url 'home' %}">BookWyrms</a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == home_url %}active" aria-current="page{% endif %}"
-                            href="{% url 'home' %}">Home</a>
+                        <a class="nav-link {% if request.path == home_url %}active{% endif %}"
+                            aria-current="page" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/books/' %}active{% endif %}"
+                            aria-current="page" href="{% url 'home' %}">Books</a>
                     </li>
                     {% comment %} <li class="nav-item">
                         <a class="nav-link" href="/admin/">Admin</a>
                     </li> {% endcomment %}
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == logout_url %}active{% endif %}" aria-current="page" href="{% url 'account_logout' %}">Logout</a>
+                        <a class="nav-link {% if request.path == logout_url %}active{% endif %}"
+                            aria-current="page" href="{% url 'account_logout' %}">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == home_url %}active{% endif %}"
+                            aria-current="page" href="{% url 'home' %}">Add Book</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == signup_url %}active{% endif %}" aria-current="page"
-                            href="{% url 'account_signup' %}">Register</a>
+                        <a class="nav-link {% if request.path == signup_url %}active{% endif %}"
+                            aria-current="page" href="{% url 'account_signup' %}">Register</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == login_url %}active{% endif %}" aria-current="page" href="{% url 'account_login' %}">Login</a>
+                        <a class="nav-link {% if request.path == login_url %}active{% endif %}"
+                            aria-current="page" href="{% url 'account_login' %}">Login</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -80,17 +90,19 @@
 
     <!-- Main Content -->
     <main class="flex-shrink-0 main-bg">
-        <p class ="text-end m-3">
-        {% if user.is_authenticated %}
-            You are logged in as {{ user }}
-        {% else %}
-            You are not logged in
-        {% endif %}
-        </p>
+        <div class="container-fluid">
+            <p class ="text-end m-3">
+            {% if user.is_authenticated %}
+                You are logged in as {{ user }}
+            {% else %}
+                You are not logged in
+            {% endif %}
+            </p>
 
-        {% block content %}
-        <!-- Content Goes here -->
-        {% endblock content %}
+            {% block content %}
+            <!-- Content Goes here -->
+            {% endblock content %}
+        </div>
     </main>
 
     <!-- Footer -->
