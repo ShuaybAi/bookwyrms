@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} - BookWyrms{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <!-- Book Cover -->
+        <div class="card shadow-soft">
+            {% if book.cover %}
+                <img src="{{ book.cover.url }}" 
+                     class="card-img-top" 
+                     alt="{{ book.title }} cover"
+                     style="height: 500px; object-fit: cover;">
+            {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center book-cover-placeholder" 
+                     style="height: 500px;">
+                    <div class="text-center">
+                        <i class="fas fa-book fa-3x mb-3"></i>
+                        <h5>{{ book.title }}</h5>
+                        <p class="mb-0">No Cover Available</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Book Actions -->
+        <div class="mt-3 d-grid gap-2">
+            <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Back to Library
+            </a>
+            {% if user.is_superuser %}
+                <a href="/admin/books/book/{{ book.id }}/change/" class="btn btn-outline-secondary">
+                    <i class="fas fa-edit"></i> Edit Book
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-lg-8">
+        <!-- Book Information -->
+        <div class="card shadow-soft h-100">
+            <div class="card-body">
+                <h1 class="card-title mb-3">{{ book.title }}</h1>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted">Author</h5>
+                        <p class="lead">{{ book.author }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted">Published</h5>
+                        <p class="lead">{{ book.published|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted">Genre/s</h5>
+                        {% if book.genres %}
+                            <p class="lead">{{ book.genres }}</p>
+                        {% else %}
+                            <p class="text-muted">Not specified</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if book.description %}
+                    <div class="mb-4">
+                        <h5 class="text-muted">Description</h5>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <p class="card-text">{{ book.description|linebreaks }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Reviews Section (placeholder for future) -->
+                <div class="mb-4">
+                    <h5 class="text-muted">Reviews</h5>
+                    <div class="alert alert-info">
+                        <i class="fas fa-star"></i> Reviews feature coming soon! 
+                        Users will be able to rate and review this book.
+                    </div>
+                </div>
+                
+                <!-- Comments Section (placeholder for future) -->
+                <div class="mb-4">
+                    <h5 class="text-muted">Comments</h5>
+                    <div class="alert alert-info">
+                        <i class="fas fa-comments"></i> Comments feature coming soon! 
+                        Users will be able to discuss this book.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Related Books Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h3 class="mb-4">More books in {{ book.user.get_full_name|default:book.user.username }}'s shelf</h3>
+        
+        <div class="row">
+            {% for related_book in user_books %}
+                {% if related_book != book %}
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="card h-100 shadow-soft">
+                            {% if related_book.cover %}
+                                <img src="{{ related_book.cover.url }}" 
+                                     class="card-img-top" 
+                                     alt="{{ related_book.title }} cover"
+                                     style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                     style="height: 200px;">
+                                    <span class="text-muted">📖</span>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="card-body">
+                                <h6 class="card-title">{{ related_book.title }}</h6>
+                                <p class="card-text text-muted small">{{ related_book.author }}</p>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <div class="col-12">
+                    <p class="text-muted">No other books by this user.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .badge {
+        font-size: 0.8rem;
+    }
+    
+    .book-cover-placeholder i {
+        opacity: 0.3;
+    }
+    
+    .text-gradient {
+        background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+</style>
+{% endblock %}

@@ -11,35 +11,37 @@
             <div class="row">
                 {% for book in object_list %}
                     <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100">
-                            {% if book.cover %}
-                                <img src="{{ book.cover.url }}" 
-                                     class="card-img-top" 
-                                     alt="{{ book.title }} cover"
-                                     style="height: 300px; object-fit: cover;">
-                            {% else %}
-                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-                                     style="height: 300px;">
-                                    <span class="text-muted">📖 No Cover</span>
-                                </div>
-                            {% endif %}
-                            
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">{{ book.title }}</h5>
-                                <p class="card-text text-muted">by {{ book.author }}</p>
-                                
-                                {% if book.description %}
-                                    <p class="card-text">{{ book.description|truncatewords:15 }}</p>
+                        <a href="{% url 'book_detail' book.pk %}" class="text-decoration-none">
+                            <div class="card h-100 book-card">
+                                {% if book.cover %}
+                                    <img src="{{ book.cover.url }}" 
+                                         class="card-img-top" 
+                                         alt="{{ book.title }} cover"
+                                         style="height: 300px; object-fit: cover;">
+                                {% else %}
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                         style="height: 300px;">
+                                        <span class="text-muted">📖 No Cover</span>
+                                    </div>
                                 {% endif %}
                                 
-                                <div class="mt-auto">
-                                    <small class="text-muted">
-                                        Published: {{ book.published|date:"Y" }} | 
-                                        Genres: {{ book.genres|default:"Not specified" }}
-                                    </small>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title text-dark">{{ book.title }}</h5>
+                                    <p class="card-text text-muted">by {{ book.author }}</p>
+                                    
+                                    {% if book.description %}
+                                        <p class="card-text text-dark">{{ book.description|truncatewords:15 }}</p>
+                                    {% endif %}
+                                    
+                                    <div class="mt-auto">
+                                        <small class="text-muted">
+                                            Published: {{ book.published|date:"Y" }} | 
+                                            Genres: {{ book.genres|default:"Not specified" }}
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 {% endfor %}
             </div>
