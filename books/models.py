@@ -14,7 +14,7 @@ class Book(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="books")
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=100)
-    published = models.DateField()
+    published = models.DateField(blank=True, null=True)
     cover = CloudinaryField('cover', blank=True, null=True)
     genres = models.CharField(max_length=300, blank=True)
     description = models.TextField(blank=True)
@@ -35,7 +35,7 @@ class Review(models.Model):
 
     class Meta:
         ordering = ["posted_on"]
-    
+
     def __str__(self):
         return f"{self.user.username} - {self.book.title} - {self.rating}"
 
@@ -49,6 +49,6 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ["posted_on"]
-    
+
     def __str__(self):
         return f"Comment: {self.content} by {self.user.username}"
