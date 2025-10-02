@@ -8,6 +8,34 @@ class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ['title', 'author']  # Other fields will be added through taking details from api
+        # fields = ['title', 'author', 'published', 'genres', 'cover', 'description']
+        # widgets = {
+        #     'title': forms.TextInput(attrs={
+        #         'class': 'form-control',
+        #         'placeholder': 'Enter book title...'
+        #     }),
+        #     'author': forms.TextInput(attrs={
+        #         'class': 'form-control',
+        #         'placeholder': 'Enter author name...'
+        #     }),
+        #     'published': forms.DateInput(attrs={
+        #         'class': 'form-control',
+        #         'type': 'date'
+        #     }),
+        #     'genres': forms.TextInput(attrs={
+        #         'class': 'form-control',
+        #         'placeholder': 'Fiction, Romance, Mystery...'
+        #     }),
+        #     'cover': forms.FileInput(attrs={
+        #         'class': 'form-control',
+        #         'accept': 'image/*'
+        #     }),
+        #     'description': forms.Textarea(attrs={
+        #         'class': 'form-control',
+        #         'rows': 4,
+        #         'placeholder': 'Enter a brief description of the book...'
+        #     })
+        # }
 
 class ReviewForm(forms.ModelForm):
     """Form for adding or editing a book review."""

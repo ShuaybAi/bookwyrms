@@ -1,8 +1,9 @@
 """Views for the books app."""
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.views import generic
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Book, Review, Comment
 from .forms import BookForm, ReviewForm, CommentForm
 
@@ -38,6 +39,26 @@ def book_detail(request, pk):
 #     else:
 #         form = BookForm()
 #     return render(request, 'add_book.html', {'form': form})
+@login_required
+def add_book(request):
+    """View to add a new book."""
+    if request.method == "POST":
+        book_form = BookForm(data=request.POST)
+        if book_form.is_valid():
+            book = book_form.save(commit=False)
+            book.user = request.user  # Assign the current user as the book owner
+            book.save()
+            messages.add_message(
+                request, messages.SUCCESS,
+                f'"{book.title}" has been added to your shelf!'
+            )
+            return redirect('book_detail', pk=book.pk)
+    else:
+        book_form = BookForm()
+
+    return render(
+        request,
+        'books/add_book.html', {'form': book_form})
 
 # def add_review(request, book_id):
 #     """View to add a review to a book."""
