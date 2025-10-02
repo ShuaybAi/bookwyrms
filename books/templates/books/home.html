@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}BookWyrms - Discover, Share, and Discuss Books{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section py-5">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <!-- Left Content -->
+            <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
+                <div class="hero-content p-4">
+                    <!-- Logo Placeholder -->
+                    <div class="hero-logo mb-4">
+                        <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+                            <div class="logo-placeholder bg-light border rounded d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <span class="text-muted">Logo</span>
+                            </div>
+                            <h1 class="ms-3 mb-0">Bookwyrms</h1>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Heading -->
+                    <h2 class="mb-4">
+                        Discover, Share, and<br>
+                        Discuss Books with Fellow<br>
+                        Book Enthusiasts
+                    </h2>
+                    
+                    <!-- Subtitle -->
+                    <p class="lead mb-5">
+                        Connect with other readers to find your next great read, share<br>
+                        your favorites, and join the conversation!
+                    </p>
+                    
+                    <!-- Action Buttons -->
+                    <div class="hero-buttons">
+                        <a href="{% url 'book_list' %}" class="btn btn-primary btn-lg me-3 mb-2">
+                            Browse Shelves
+                        </a>
+                        {% if not user.is_authenticated %}
+                        <a href="{% url 'account_signup' %}" class="btn btn-secondary btn-lg mb-2">
+                            Login or Sign Up
+                        </a>
+                        {% else %}
+                        <a href="{% url 'add_book' %}" class="btn btn-secondary btn-lg mb-2">
+                            Add Your Books
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Image Placeholder -->
+            <div class="col-lg-6 col-md-12">
+                <div class="text-center">
+                    <div class="illustration-placeholder bg-light border rounded d-flex align-items-center justify-content-center" style="height: 400px;">
+                        <span class="text-muted fs-4">Hero Image Placeholder</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h3 class="section-title">Why Choose BookWyrms?</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-search fa-2x text-primary"></i>
+                    </div>
+                    <h5>Discover New Books</h5>
+                    <p class="text-muted">Explore curated collections and find your next favorite read through community recommendations.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-users fa-2x text-primary"></i>
+                    </div>
+                    <h5>Connect with Readers</h5>
+                    <p class="text-muted">Join a community of book lovers, share your thoughts, and engage in meaningful discussions.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-star fa-2x text-primary"></i>
+                    </div>
+                    <h5>Rate & Review</h5>
+                    <p class="text-muted">Share your opinions, write detailed reviews, and help others discover great books.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+{% if not user.is_authenticated %}
+<div class="py-5 bg-light">
+    <div class="container text-center">
+        <h3 class="mb-4">Ready to Start Your Reading Journey?</h3>
+        <p class="lead mb-4">Join thousands of book enthusiasts already using BookWyrms</p>
+        <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg me-3">Sign Up Now</a>
+        <a href="{% url 'account_login' %}" class="btn btn-outline-primary btn-lg">Login</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

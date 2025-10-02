@@ -2,6 +2,8 @@
 
 {% url 'home' as home_url %}
 {% url 'book_list' as book_list_url %}
+{% url 'add_book' as add_book_url %}
+{% url 'my_account' as my_account_url %}
 {% url 'account_login' as login_url %}
 {% url 'account_signup' as signup_url %}
 {% url 'account_logout' as logout_url %}
@@ -49,11 +51,11 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == home_url %}active{% endif %}"
-                            aria-current="page" href="{% url 'home' %}">Home</a>
+                            aria-current="page" href="{{ home_url }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/books/' %}active{% endif %}"
-                            aria-current="page" href="{% url 'home' %}">Books</a>
+                        <a class="nav-link {% if request.path == book_list_url %}active{% endif %}"
+                            aria-current="page" href="{{ book_list_url }}">Shelves</a>
                     </li>
                     {% comment %} <li class="nav-item">
                         <a class="nav-link" href="/admin/">Admin</a>
@@ -61,22 +63,28 @@
                     {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == add_book_url %}active{% endif %}"
-                            aria-current="page" href="{% url 'add_book' %}">
+                            aria-current="page" href="{{ add_book_url }}">
                             <i class="fas fa-plus"></i> Add Book
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {% if request.path == my_account_url %}active{% endif %}"
+                            aria-current="page" href="{{ my_account_url }}">
+                            <i class="fas fa-user"></i> My Account
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {% if request.path == logout_url %}active{% endif %}"
-                            aria-current="page" href="{% url 'account_logout' %}">Logout</a>
+                            aria-current="page" href="{{ logout_url }}">Logout</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == signup_url %}active{% endif %}"
-                            aria-current="page" href="{% url 'account_signup' %}">Register</a>
+                            aria-current="page" href="{{ signup_url }}">Register</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == login_url %}active{% endif %}"
-                            aria-current="page" href="{% url 'account_login' %}">Login</a>
+                            aria-current="page" href="{{ login_url }}">Login</a>
                     </li>
                     {% endif %}
                 </ul>

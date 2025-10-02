@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}My Account - BookWyrms{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">👤 My Account</h1>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Profile Information -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                {% if user.profile_image %}
+                    <img src="{{ user.profile_image.url }}" 
+                         class="rounded-circle mb-3" 
+                         alt="Profile Picture"
+                         style="width: 120px; height: 120px; object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mb-3 mx-auto" 
+                         style="width: 120px; height: 120px;">
+                        <i class="fas fa-user fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
+                
+                <h4>{{ user.get_full_name|default:user.username }}</h4>
+                <p class="text-muted"><em>@{{ user.username }}</em></p>
+                
+                {% if user.bio %}
+                    <p class="text-start">{{ user.bio }}</p>
+                {% else %}
+                    <p class="text-muted">No bio yet</p>
+                {% endif %}
+                
+                <a href="#" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </a>
+            </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6 class="card-title">📊 My Stats</h6>
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="border-end">
+                            <h5 class="mb-0">{{ user.books.count }}</h5>
+                            <small class="text-muted">Books</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border-end">
+                            <h5 class="mb-0">{{ user.reviewers.count }}</h5>
+                            <small class="text-muted">Reviews</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <h5 class="mb-0">{{ user.commenters.count }}</h5>
+                        <small class="text-muted">Comments</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Account Details & Recent Activity -->
+    <div class="col-md-8">
+        <!-- Account Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">📋 Account Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Username:</strong></div>
+                    <div class="col-sm-8">{{ user.username }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Email:</strong></div>
+                    <div class="col-sm-8">{{ user.email }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>First Name:</strong></div>
+                    <div class="col-sm-8">{{ user.first_name|default:"Not set" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Last Name:</strong></div>
+                    <div class="col-sm-8">{{ user.last_name|default:"Not set" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Member Since:</strong></div>
+                    <div class="col-sm-8">{{ user.date_joined|date:"F j, Y" }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Books -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">📚 Recent Books</h5>
+                <a href="{% url 'book_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if user.books.all %}
+                    <div class="row">
+                        {% for book in user.books.all|slice:":3" %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    {% if book.cover %}
+                                        <img src="{{ book.cover.url }}" 
+                                             class="card-img-top" 
+                                             alt="{{ book.title }}"
+                                             style="height: 200px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                             style="height: 200px;">
+                                            <span class="text-muted">📖</span>
+                                        </div>
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ book.title|truncatechars:20 }}</h6>
+                                        <p class="card-text small text-muted">{{ book.author }}</p>
+                                        <a href="{% url 'book_detail' book.pk %}" class="btn btn-sm btn-primary">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No books yet. <a href="{% url 'add_book' %}">Add your first book!</a></p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Recent Reviews -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">⭐ Recent Reviews</h5>
+            </div>
+            <div class="card-body">
+                {% if user.reviewers.all %}
+                    {% for review in user.reviewers.all|slice:":3" %}
+                        <div class="border-bottom pb-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">{{ review.book.title }}</h6>
+                                    <div class="mb-2">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-muted"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <p class="mb-1">{{ review.content|truncatewords:15 }}</p>
+                                </div>
+                                <small class="text-muted">{{ review.posted_on|date:"M j" }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No reviews yet. Start reviewing your books!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'add_book' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Book
+            </a>
+            <a href="{% url 'book_list' %}" class="btn btn-outline-primary">
+                <i class="fas fa-book"></i> View My Shelf
+            </a>
+            <a href="{% url 'account_logout' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

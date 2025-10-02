@@ -1,6 +1,5 @@
 """Views for the books app."""
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect
 from django.views import generic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,6 +7,10 @@ from .models import Book, Review, Comment
 from .forms import BookForm, ReviewForm, CommentForm
 
 # Create your views here.
+def home(request):
+    """View for the homepage."""
+    return render(request, 'books/home.html')
+
 class BookList(generic.ListView):
     """View to list all books."""
     queryset = Book.objects.all()
@@ -16,6 +19,7 @@ class BookList(generic.ListView):
 def book_detail(request, pk):
     """View to display a single book's details."""
     book = get_object_or_404(Book, pk=pk)
+
     # Get related books by same user
     user_books = Book.objects.filter(user=book.user).exclude(pk=pk)[:4]
     # reviews = book.reviews.all()
@@ -106,3 +110,17 @@ def add_book(request):
 #         messages.add_message(request, messages.ERROR, 'You can only delete your own comments!')
 
 #     return HttpResponseRedirect(reverse('book_detail', args=[slug]))
+
+@login_required
+def my_account(request):
+    """View to display and edit user's account information"""
+    # if request.method == "POST":
+    #     form = UserProfileForm(request.POST, request.FILES, instance=request.user.profile)
+    #     if form.is_valid():
+    #         form.save()
+    #         messages.success(request, "Your profile has been updated!")
+    #         return redirect("my_account")
+    # else:
+    #     form = UserProfileForm(instance=request.user.profile)
+
+    return render(request, 'books/my_account.html')
