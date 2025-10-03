@@ -35,7 +35,7 @@
                     <p class="text-muted">No bio yet</p>
                 {% endif %}
                 
-                <a href="#" class="btn btn-outline-primary btn-sm">
+                <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-edit"></i> Edit Profile
                 </a>
             </div>
@@ -54,12 +54,12 @@
                     </div>
                     <div class="col-4">
                         <div class="border-end">
-                            <h5 class="mb-0">{{ user.reviewers.count }}</h5>
+                            <h5 class="mb-0">{{ user.reviewers.count }}</h5> <!-- reviewers or reviews?? -->
                             <small class="text-muted">Reviews</small>
                         </div>
                     </div>
                     <div class="col-4">
-                        <h5 class="mb-0">{{ user.commenters.count }}</h5>
+                        <h5 class="mb-0">{{ user.commenters.count }}</h5> <!-- commenters or comments?? -->
                         <small class="text-muted">Comments</small>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
             <div class="card-body">
                 {% if user.books.all %}
                     <div class="row">
-                        {% for book in user.books.all|slice:":3" %}
+                        {% for book in user.books.all|slice:":3" %} <!-- Make this ordered by most recent -->
                             <div class="col-md-4 mb-3">
                                 <div class="card h-100">
                                     {% if book.cover %}
@@ -172,7 +172,7 @@
 </div>
 
 <!-- Action Buttons -->
-<div class="row mt-4">
+<div class="row mt-4 mb-4">
     <div class="col-12">
         <div class="d-flex gap-2 flex-wrap">
             <a href="{% url 'add_book' %}" class="btn btn-primary">
@@ -181,7 +181,7 @@
             <a href="{% url 'book_list' %}" class="btn btn-outline-primary">
                 <i class="fas fa-book"></i> View My Shelf
             </a>
-            <a href="{% url 'account_logout' %}" class="btn btn-outline-secondary">
+            <a href="{% url 'account_logout' %}" class="btn btn-outline-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </div>

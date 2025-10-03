@@ -18,6 +18,7 @@ class Book(models.Model):
     cover = CloudinaryField('cover', blank=True, null=True)
     genres = models.CharField(max_length=300, blank=True)
     description = models.TextField(blank=True)
+    # added_on = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["user"]

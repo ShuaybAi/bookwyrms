@@ -1,6 +1,6 @@
 """Forms for the books app."""
 from django import forms
-from .models import Book, Review, Comment
+from .models import Book, Review, Comment, CustomUser
 
 
 class BookForm(forms.ModelForm):
@@ -48,3 +48,36 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']  # 'review' and 'user' will be set in the view
+
+class UserProfileForm(forms.ModelForm):
+    """Form for editing user profile information."""
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'first_name', 'last_name', 'bio', 'profile_image']
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter username...',
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter email address...'
+            }),
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter first name...'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter last name...'
+            }),
+            'bio': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Tell us about yourself and your reading interests...'
+            }),
+            'profile_image': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            })
+        }

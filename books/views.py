@@ -4,7 +4,7 @@ from django.views import generic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Book, Review, Comment
-from .forms import BookForm, ReviewForm, CommentForm
+from .forms import BookForm, ReviewForm, CommentForm, UserProfileForm
 
 # Create your views here.
 def home(request):
@@ -124,3 +124,32 @@ def my_account(request):
     #     form = UserProfileForm(instance=request.user.profile)
 
     return render(request, 'books/my_account.html')
+
+@login_required
+def edit_profile(request):
+    """View to edit user's profile information."""
+    if request.method == "POST":
+        # Handle image removal
+        if request.POST.get('remove_image'):
+            if request.user.profile_image:
+                request.user.profile_image.delete()
+                request.user.save()
+                messages.add_message(
+                    request, messages.SUCCESS,
+                    'Profile picture removed successfully!'
+                )
+            return redirect('edit_profile')
+        
+        # Handle profile update
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.add_message(
+                request, messages.SUCCESS,
+                'Your profile has been updated successfully!'
+            )
+            return redirect('my_account')
+    else:
+        form = UserProfileForm(instance=request.user)
+
+    return render(request, 'books/edit_profile.html', {'form': form})
