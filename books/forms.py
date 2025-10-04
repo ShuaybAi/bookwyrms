@@ -53,12 +53,8 @@ class UserProfileForm(forms.ModelForm):
     """Form for editing user profile information."""
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'first_name', 'last_name', 'bio', 'profile_image']
+        fields = ['email', 'first_name', 'last_name', 'bio', 'profile_image']
         widgets = {
-            'username': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter username...',
-            }),
             'email': forms.EmailInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter email address...'

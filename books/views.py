@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+import cloudinary.uploader
 from .models import Book, Review, Comment
 from .forms import BookForm, ReviewForm, CommentForm, UserProfileForm
 
@@ -114,32 +115,12 @@ def add_book(request):
 @login_required
 def my_account(request):
     """View to display and edit user's account information"""
-    # if request.method == "POST":
-    #     form = UserProfileForm(request.POST, request.FILES, instance=request.user.profile)
-    #     if form.is_valid():
-    #         form.save()
-    #         messages.success(request, "Your profile has been updated!")
-    #         return redirect("my_account")
-    # else:
-    #     form = UserProfileForm(instance=request.user.profile)
-
     return render(request, 'books/my_account.html')
 
 @login_required
 def edit_profile(request):
     """View to edit user's profile information."""
     if request.method == "POST":
-        # Handle image removal
-        if request.POST.get('remove_image'):
-            if request.user.profile_image:
-                request.user.profile_image.delete()
-                request.user.save()
-                messages.add_message(
-                    request, messages.SUCCESS,
-                    'Profile picture removed successfully!'
-                )
-            return redirect('edit_profile')
-        
         # Handle profile update
         form = UserProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
@@ -153,3 +134,33 @@ def edit_profile(request):
         form = UserProfileForm(instance=request.user)
 
     return render(request, 'books/edit_profile.html', {'form': form})
+
+@login_required
+def remove_profile_image(request):
+    """View to remove user's profile image."""
+    user = request.user
+    if request.method == "POST":
+        if user.profile_image:
+            try:
+                # Extract the public_id from the Cloudinary URL
+                public_id = user.profile_image.public_id
+                # Delete from Cloudinary
+                cloudinary.uploader.destroy(public_id)
+                # Clear the field and save the user
+                user.profile_image = None
+                user.save()
+                messages.add_message(
+                    request, messages.SUCCESS,
+                    'Profile picture removed successfully!'
+                )
+            except cloudinary.exceptions.Error as e:
+                messages.add_message(
+                    request, messages.ERROR,
+                    f'Error removing image: {str(e)}'
+                )
+        else:
+            messages.add_message(
+                request, messages.ERROR,
+                'No profile picture to remove.'
+            )
+    return redirect('edit_profile')

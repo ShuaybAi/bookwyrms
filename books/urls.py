@@ -9,4 +9,6 @@ urlpatterns = [
     path('add-book/', views.add_book, name='add_book'),
     path('my-account/', views.my_account, name='my_account'),
     path('my-account/edit-profile/', views.edit_profile, name='edit_profile'),
+    path('remove-profile-image/', views.remove_profile_image, name='remove_profile_image'),
+    # path('my-account/delete-account/', views.delete_account, name='delete_account'),
 ]

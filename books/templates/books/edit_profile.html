@@ -79,16 +79,12 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="id_username" class="form-label">
-                                Username <span class="text-danger">*</span>
-                            </label>
+                            <label for="id_username" class="form-label">Username</label>
                             <input type="text" class="form-control text-muted" id="id_username" name="username"
                                    value="{{ user.username }}" disabled placeholder="Username cannot be changed">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="id_email" class="form-label">
-                                Email Address
-                            </label>
+                            <label for="id_email" class="form-label">Email Address</label>
                             <input type="email" class="form-control" id="id_email" name="email" 
                                    value="{{ user.email }}" placeholder="Enter email address...">
                         </div>
@@ -96,25 +92,19 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="id_first_name" class="form-label">
-                                First Name
-                            </label>
+                            <label for="id_first_name" class="form-label">First Name</label>
                             <input type="text" class="form-control" id="id_first_name" name="first_name" 
                                    value="{{ user.first_name }}" placeholder="Enter first name...">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="id_last_name" class="form-label">
-                                Last Name
-                            </label>
+                            <label for="id_last_name" class="form-label">Last Name</label>
                             <input type="text" class="form-control" id="id_last_name" name="last_name" 
                                    value="{{ user.last_name }}" placeholder="Enter last name...">
                         </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="id_bio" class="form-label">
-                            Bio
-                        </label>
+                        <label for="id_bio" class="form-label">Bio</label>
                         <textarea class="form-control" id="id_bio" name="bio" rows="4" 
                                   placeholder="Tell us about yourself and your reading interests...">{{ user.bio }}</textarea>
                         <div class="form-text">
@@ -143,6 +133,11 @@
                 </div>
             </div>
         </form>
+        
+        <!-- Hidden form for removing profile image -->
+        <form id="remove-image-form" method="post" action="/remove-profile-image/" style="display: none;">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        </form>
     </div>
 </div>
 
@@ -166,12 +161,6 @@
         </div>
     </div>
 </div>
-
-<!-- Hidden form for image removal -->
-<form id="remove-image-form" method="post" style="display: none;">
-    {% csrf_token %}
-    <input type="hidden" name="remove_image" value="true">
-</form>
 {% endblock %}
 
 {% block extra_js %}

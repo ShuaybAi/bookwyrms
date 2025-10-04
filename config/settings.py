@@ -51,9 +51,9 @@ INSTALLED_APPS = [
     'books'
 ]
 
-SITE_ID = 1 
-LOGIN_REDIRECT_URL = '/' 
-LOGOUT_REDIRECT_URL = '/' 
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -86,7 +86,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -101,10 +100,7 @@ DATABASES = {
     'default': dj_database_url.parse(os.environ.get("DATABASE_URL")) 
 }
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.herokuapp.com"
-]
-
+# CSRF_TRUSTED_ORIGINS = ["https://*.herokuapp.com"]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
