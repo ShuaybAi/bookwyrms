@@ -138,7 +138,7 @@ footer {
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: var(--primary-color);
+    background-color: var(--dark-bg);
     color: #fff;
     padding: 1rem 0;
     text-align: center;
@@ -182,24 +182,6 @@ footer {
     to { transform: rotate(360deg); }
 }
 
-/* Custom Scrollbar */
-/* ::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--light-bg);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--secondary-color);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-color);
-} */
-
 /* Utility Classes */
 .text-gradient {
     background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
@@ -214,6 +196,15 @@ footer {
 
 .border-radius-custom {
     border-radius: var(--border-radius);
+}
+
+.card-header {
+    color: var(--title-text-color);
+    background-color: var(--dark-bg);
+}
+
+.card-header h2 {
+    color: var(--title-text-color);
 }
 
 /* Book Card Links */

@@ -164,3 +164,42 @@ def remove_profile_image(request):
                 'No profile picture to remove.'
             )
     return redirect('edit_profile')
+
+@login_required
+def delete_account(request):
+    """View to permanently delete user account and all associated data."""
+    if request.method == "POST":
+        user = request.user
+        username = user.username
+        try:
+            # Delete user's profile image from Cloudinary if it exists
+            if user.profile_image:
+                try:
+                    public_id = user.profile_image.public_id
+                    cloudinary.uploader.destroy(public_id)
+                except cloudinary.exceptions.Error as e:
+                    print(f"Error deleting profile image from Cloudinary: {e}")
+
+            # Note: Django will cascade delete related objects (books, reviews, comments)
+            # due to foreign key relationships with on_delete=CASCADE
+            user.delete()
+
+            # Add success message for the next request
+            messages.success(
+                request,
+                f'Account: "{username}" has been permanently deleted. We\'re sorry to see you go!'
+            )
+
+            # Redirect to home page since user no longer exists
+            return redirect('home')
+
+        except (user.DoesNotExist, cloudinary.exceptions.Error) as e:
+            print(f"Error deleting account for {username}: {e}")
+            messages.error(
+                request,
+                'An error occurred while deleting your account. Please try again.'
+            )
+            return redirect('my_account')
+
+    # If GET request, redirect to account page (shouldn't happen with the modal setup)
+    return redirect('my_account')

@@ -1,8 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}My Account - BookWyrms{% endblock %}
 
 {% block content %}
+<!-- Hidden CSRF token for JavaScript form submissions -->
+{% csrf_token %}
+
 <div class="row">
     <div class="col-12">
         <h1 class="mb-4">My Account</h1>
@@ -102,7 +106,7 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">📚 Recent Books</h5>
-                <a href="{% url 'book_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                <button href="{% url 'book_list' %}" class="btn btn-sm btn-outline-primary">View All</button>
             </div>
             <div class="card-body">
                 {% if user.books.all %}
@@ -181,10 +185,97 @@
             <a href="{% url 'book_list' %}" class="btn btn-outline-primary">
                 <i class="fas fa-book"></i> View My Shelf
             </a>
-            <a href="{% url 'account_logout' %}" class="btn btn-outline-danger">
+            <a href="{% url 'account_logout' %}" class="btn btn-warning">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
+            <button type="button" class="btn btn-danger ms-auto" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                <i class="fas fa-exclamation-triangle"></i> Delete Account
+            </button>
         </div>
     </div>
 </div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteAccountModalLabel">⚠️ DANGER: Delete Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-danger m-3" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-skull-crossbones me-2"></i>
+                        This action CANNOT be undone!
+                    </h6>
+                    <p class="mb-0">You are about to permanently delete your BookWyrms account and ALL associated data.</p>
+                </div>
+                
+                <h6 class="text-danger mb-3">
+                    <i class="fas fa-trash-alt me-2"></i>
+                    What will be permanently deleted:
+                </h6>
+                <ul class="list-unstyled mb-4">
+                    <li class="mb-2">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <strong>{{ user.books.count }} book{{ user.books.count|pluralize }}</strong> from your shelf
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <strong>{{ user.reviewers.count }} review{{ user.reviewers.count|pluralize }}</strong> you've written
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <strong>{{ user.commenters.count }} comment{{ user.commenters.count|pluralize }}</strong> you've made
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <strong>Your profile information</strong> (bio, profile picture, etc.)
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <strong>Your account history</strong> (member since {{ user.date_joined|date:"F j, Y" }})
+                    </li>
+                </ul>
+                
+                <div class="border border-warning bg-warning bg-opacity-10 p-3 rounded mb-4">
+                    <h6 class="text-warning mb-2">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Consider these alternatives:
+                    </h6>
+                    <ul class="mb-0 small">
+                        <li>Take a break - just logout and come back later</li>
+                        <li>Make your profile private instead of deleting</li>
+                        <li>Export your book data before deleting</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="confirmationText" class="form-label">
+                        <strong>Type "DELETE MY ACCOUNT" to confirm:</strong>
+                    </label>
+                    <input type="text" class="form-control" id="confirmationText" 
+                           placeholder="Type exactly: DELETE MY ACCOUNT" 
+                           autocomplete="off">
+                    <div class="form-text text-danger">
+                        This confirmation is case-sensitive and must be typed exactly.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel - Keep My Account
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+                    <i class="fas fa-skull-crossbones me-2"></i>Yes, Delete My Account Forever
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/my-account.js' %}"></script>
 {% endblock %}

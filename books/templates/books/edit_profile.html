@@ -80,7 +80,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="id_username" class="form-label">Username</label>
-                            <input type="text" class="form-control text-muted" id="id_username" name="username"
+                            <input type="text" class="form-control text-muted bg-dark bg-opacity-25" id="id_username" name="username"
                                    value="{{ user.username }}" disabled placeholder="Username cannot be changed">
                         </div>
                         <div class="col-md-6 mb-3">
@@ -135,7 +135,7 @@
         </form>
         
         <!-- Hidden form for removing profile image -->
-        <form id="remove-image-form" method="post" action="/remove-profile-image/" style="display: none;">
+        <form id="remove-image-form" method="post" action="{% url 'remove_profile_image' %}" style="display: none;">
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
         </form>
     </div>

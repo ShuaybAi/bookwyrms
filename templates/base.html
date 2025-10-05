@@ -41,7 +41,8 @@
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'home' %}">
-                <img src="{% static 'images/logo/BookWyrms_Logo_(#D4AF37).webp' %}" alt="Bookwyrms Logo" class="img-fluid" style="height: 30px; width: 30px;">
+                <img src="{% static 'images/logo/BookWyrms_Logo_(#D4AF37).webp' %}"
+                     alt="Bookwyrms Logo" class="img-fluid" style="height: 30px; width: 30px;">
                 BookWyrms
             </a>
             
@@ -108,11 +109,9 @@
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 {% for message in messages %}
-                <div class="alert {{ message.tags }} alert-dismissible
-                  fade show" id="msg" role="alert">
+                <div class="alert {{ message.tags }} alert-dismissible fade show" id="msg" role="alert">
                     {{ message | safe }}
-                    <button type="button" class="btn-close"
-                      data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 {% endfor %}
             </div>
@@ -137,7 +136,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light text-center py-3 mt-auto">
+    <footer class="text-center py-3 mt-auto">
         <div class="container">
             <p>&copy; 2025 BookWyrms. Happy Reading!</p>
         </div>
@@ -147,7 +146,7 @@
     <script src="https://kit.fontawesome.com/57c9e736be.js" crossorigin="anonymous"></script>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     
     <!-- Main JavaScript -->
     <script src="{% static 'js/main.js' %}"></script>
