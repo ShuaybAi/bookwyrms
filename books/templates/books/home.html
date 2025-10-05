@@ -7,35 +7,37 @@
 <!-- Hero Section -->
 <div class="hero-section py-5">
     <div class="container-fluid">
-        <div class="row align-items-center">
-            <!-- Left Content -->
-            <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
-                <div class="hero-content p-4">
-                    <!-- Logo Placeholder -->
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-6 col-md-12 mb-4 mb-lg-0" style="max-width: 520px;">
+                {% comment %} <div class="hero-content p-4"> {% endcomment %}
+                    <!-- Logo -->
                     <div class="hero-logo mb-4">
-                        <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
-                            <div class="logo-placeholder bg-light border rounded d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                                <span class="text-muted">Logo</span>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <div class="d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <!-- logo image -->
+                                <img src="{% static 'images/logo/bookwyrms_logo_(green).webp' %}" alt="Bookwyrms Logo" class="img-fluid">
                             </div>
-                            <h1 class="ms-3 mb-0">Bookwyrms</h1>
+                            {% comment %} <h1 class="ms-3 mb-0">Bookwyrms</h1> {% endcomment %}
+                            <img src="{% static 'images/logo/BookWyrms_stylized_text.webp' %}" alt="Bookwyrms Text Logo" class="img-fluid ms-3" style="height: 80px;">
                         </div>
                     </div>
                     
                     <!-- Main Heading -->
-                    <h2 class="mb-4">
+
+                    <div class="h2 d-flex container-fluid w-auto mb-4 justify-content-center">
                         Discover, Share, and<br>
                         Discuss Books with Fellow<br>
                         Book Enthusiasts
-                    </h2>
+                    </div>
                     
                     <!-- Subtitle -->
                     <p class="lead mb-5">
-                        Connect with other readers to find your next great read, share<br>
+                        Connect with other readers to find your next great read, share
                         your favorites, and join the conversation!
                     </p>
                     
                     <!-- Action Buttons -->
-                    <div class="hero-buttons">
+                    <div class="d-flex hero-buttons justify-content-center">
                         <a href="{% url 'book_list' %}" class="btn btn-primary btn-lg me-3 mb-2">
                             Browse Shelves
                         </a>
@@ -48,18 +50,20 @@
                             Add Your Books
                         </a>
                         {% endif %}
-                    </div>
+                    {% comment %} </div> {% endcomment %}
                 </div>
             </div>
             
-            <!-- Right Image Placeholder -->
+            {% comment %} <!-- Right Image Placeholder -->
             <div class="col-lg-6 col-md-12">
                 <div class="text-center">
-                    <div class="illustration-placeholder bg-light border rounded d-flex align-items-center justify-content-center" style="height: 400px;">
-                        <span class="text-muted fs-4">Hero Image Placeholder</span>
+                    <div class="d-flex align-items-center justify-content-center" style="height: 400px;">
+                        <!-- <span class="text-muted fs-4">Hero Image Placeholder</span> -->
+                        <img src="{% static 'images/bookwyrms_stylized_text_only.png' %}" alt="Hero Image" class="img-fluid">
                     </div>
                 </div>
-            </div>
+            </div> {% endcomment %}
+
         </div>
     </div>
 </div>
