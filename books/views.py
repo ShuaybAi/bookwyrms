@@ -3,8 +3,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from itertools import groupby
 import cloudinary.uploader
-from .models import Book, Review, Comment
+from .models import Book, CustomUser, Review, Comment
 from .forms import BookForm, ReviewForm, CommentForm, UserProfileForm
 
 # Create your views here.
@@ -16,6 +17,35 @@ class BookList(generic.ListView):
     """View to list all books."""
     queryset = Book.objects.all()
     template_name = 'books/book_list.html'
+    paginate_by = 5  # Adjust the number of books per page as needed
+
+def display_shelves(request):
+    """View to display all book shelves grouped by user."""
+
+    # Get books ordered by user (already set in model)
+    books = Book.objects.all().select_related('user')
+
+    # Group books by user and limit to preview (first 3 books)
+    books_by_user = []
+    for user, user_books in groupby(books, key=lambda book: book.user):
+        all_books = list(user_books)
+        books_by_user.append({
+            'user': user,
+            'books': all_books[:3],  # Show only first 3 books as preview
+            'total_books': len(all_books),
+            'has_more': len(all_books) > 3
+        })
+
+    return render(request, 'books/shelves.html', {'books_by_user': books_by_user})
+
+def user_shelf(request, username, user_id):
+    """View to display all books for a specific user."""
+    user = get_object_or_404(CustomUser, id=user_id)
+    books = Book.objects.filter(user=user).order_by('-id')  # Show newest first
+    return render(request, 'books/user_shelf.html', {
+        'shelf_user': user,
+        'books': books
+    })
 
 def book_detail(request, pk):
     """View to display a single book's details."""
@@ -34,16 +64,6 @@ def book_detail(request, pk):
         # 'comment_form': CommentForm(),
     })
 
-# def add_book(request):
-#     """View to add a new book."""
-#     if request.method == 'POST':
-#         form = BookForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
-#     else:
-#         form = BookForm()
-#     return render(request, 'add_book.html', {'form': form})
 @login_required
 def add_book(request):
     """View to add a new book."""

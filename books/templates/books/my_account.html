@@ -106,7 +106,7 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">📚 Recent Books</h5>
-                <button href="{% url 'book_list' %}" class="btn btn-sm btn-outline-primary">View All</button>
+                <a href="{% url 'user_shelf' user.username user.id %}" class="btn btn-sm btn-outline-primary">View All</a>
             </div>
             <div class="card-body">
                 {% if user.books.all %}
@@ -182,7 +182,7 @@
             <a href="{% url 'add_book' %}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add New Book
             </a>
-            <a href="{% url 'book_list' %}" class="btn btn-outline-primary">
+            <a href="{% url 'shelves' %}" class="btn btn-outline-primary">
                 <i class="fas fa-book"></i> View My Shelf
             </a>
             <a href="{% url 'account_logout' %}" class="btn btn-warning">
@@ -204,7 +204,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="alert-danger m-3" role="alert">
+                <div class="alert alert-danger" role="alert">
                     <h6 class="alert-heading">
                         <i class="fas fa-skull-crossbones me-2"></i>
                         This action CANNOT be undone!

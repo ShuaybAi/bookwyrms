@@ -89,14 +89,6 @@ body::before {
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
-/* Book Cover Placeholder */
-.book-cover-placeholder {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-size: 1.2rem;
-    font-weight: 500;
-}
-
 /* Button Styling */
 .btn-primary {
     background-color: var(--secondary-color);

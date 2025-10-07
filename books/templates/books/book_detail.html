@@ -23,7 +23,7 @@
         
         <!-- Book Actions -->
         <div class="mt-3 d-grid gap-2">
-            <a href="{% url 'book_list' %}" class="btn btn-outline-primary">
+            <a href="{% url 'shelves' %}" class="btn btn-outline-primary">
                 <i class="fas fa-arrow-left"></i> Back to Shelves
             </a>
             {% if user.is_superuser %}
@@ -71,7 +71,7 @@
                         <h5 class="text-muted">Description</h5>
                         <div class="card bg-light">
                             <div class="card-body">
-                                <p class="card-text">{{ book.description|linebreaks }}</p>
+                                <p class="card-text">{{ book.description|safe|linebreaks }}</p>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                 <!-- Reviews Section (placeholder for future) -->
                 <div class="mb-4">
                     <h5 class="text-muted">Reviews</h5>
-                    <div class="alert-info p-3">
+                    <div class="alert alert-info">
                         <i class="fas fa-star"></i> Reviews feature coming soon! 
                         Users will be able to rate and review this book.
                     </div>
@@ -89,7 +89,7 @@
                 <!-- Comments Section (placeholder for future) -->
                 <div class="mb-4">
                     <h5 class="text-muted">Comments</h5>
-                    <div class="alert-info p-3">
+                    <div class="alert alert-info">
                         <i class="fas fa-comments"></i> Comments feature coming soon! 
                         Users will be able to discuss this book.
                     </div>
@@ -102,7 +102,7 @@
 <!-- Related Books Section -->
 <div class="row mt-5">
     <div class="col-12">
-        <h3 class="mb-4">More books in {{ book.user.username }}'s shelf</h3>
+        <h3 class="mb-4">More books in {{ book.user.full_name|default:book.user.username }}'s shelf</h3>
         
         <div class="row">
             {% for related_book in user_books %}
@@ -137,24 +137,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<style>
-    .badge {
-        font-size: 0.8rem;
-    }
-    
-    .book-cover-placeholder i {
-        opacity: 0.3;
-    }
-    
-    .text-gradient {
-        background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-</style>
 {% endblock %}

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}BookShelves - BookWyrms{% endblock %}
+
+{% block content %}
+{% comment %} <div class="container my-3">
+    <div class="row align-items-center border rounded p-3 bg-light">
+        <div class="col-md-3">
+            <img src="{% static 'images/blank-cover.webp' %}" class="img-fluid rounded" alt="Book Cover">
+        </div>
+        <div class="col-md-9">
+            <h4 class="mb-1">Book Title</h4>
+            <p class="mb-1 text-muted">by Jane Doe</p>
+            <p class="mb-2"><strong>Genre:</strong> Fantasy • <strong>Rating:</strong> 4.5 ⭐</p>
+            <p class="text-truncate">A witty, strategic tale of dragons, deception, and destiny...</p>
+            <a href="#" class="btn btn-outline-success btn-sm">Details</a>
+        </div>
+    </div>
+</div> {% endcomment %}
+<!--📚-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">BookShelves</h1>
+            
+            {% for user_group in books_by_user %}
+                <!-- User Section Header -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex align-items-center mb-3">
+                            {% if user_group.user.profile_image %}
+                                <img src="{{ user_group.user.profile_image.url }}" 
+                                     class="rounded-circle me-3" 
+                                     alt="{{ user_group.user.username }}'s profile"
+                                     style="width: 50px; height: 50px; object-fit: cover;">
+                            {% else %}
+                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" 
+                                     style="width: 50px; height: 50px;">
+                                    <i class="fas fa-user text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <div class="flex-grow-1">
+                                <h3 class="mb-0">{{ user_group.user.get_full_name|default:user_group.user.username }}'s Shelf</h3>
+                                <small class="text-muted">{{ user_group.total_books }} book{{ user_group.total_books|pluralize }}</small>
+                            </div>
+                            {% comment %} {% if user_group.has_more %} {% endcomment %}
+                                <a href="{% url 'user_shelf' user_group.user.username user_group.user.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye"></i> View All ({{ user_group.total_books }})
+                                </a>
+                            {% comment %} {% endif %} {% endcomment %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Books for this user -->
+                <div class="row mb-5">
+                    {% for book in user_group.books %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <a href="{% url 'book_detail' book.pk %}" class="text-decoration-none">
+                                <div class="card h-100 book-card">
+                                    {% if book.cover %}
+                                        <img src="{{ book.cover.url }}"
+                                            class="card-img-top"
+                                            alt="{{ book.title }} cover"
+                                            style="height: 300px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{% static 'images/blank-cover.webp' %}"
+                                            class="card-img-top"
+                                            alt="blank cover"
+                                            style="height: 300px; object-fit: cover;">
+                                    {% endif %}
+        
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title text-dark">{{ book.title }}</h5>
+                                        <p class="card-text text-muted">by {{ book.author }}</p>
+        
+                                        {% if book.description %}
+                                            <p class="card-text text-dark">{{ book.description|safe|truncatewords:15 }}</p>
+                                        {% endif %}
+        
+                                        <div class="mt-auto">
+                                            <small class="text-muted">
+                                                Published: {{ book.published|date:"Y" }} |
+                                                Genres: {{ book.genres|default:"Not specified" }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <h4>{{ user_group.user.username }} hasn't added any books yet!</h4>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    
+                    {% if user_group.has_more %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 border-dashed text-center d-flex align-items-center justify-content-center" style="min-height: 400px; border-style: dashed; border-color: #dee2e6;">
+                                <div class="card-body d-flex flex-column justify-content-center">
+                                    <i class="fas fa-plus-circle fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">{{ user_group.total_books|add:"-3" }} more book{{ user_group.total_books|add:"-3"|pluralize }}</h5>
+                                    <a href="{% url 'user_shelf' user_group.user.username user_group.user.id %}" class="btn btn-outline-primary mt-2">
+                                        View All {{ user_group.total_books }} Books
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="alert alert-info">
+                    <h4>No books yet!</h4>
+                    <p>Start building your library by adding some books through the <a href="{% url 'add_book' %}">add book page</a>.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    {% if is_paginated %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link"> &laquo; PREV</a></li>
+                {% endif %}
+                {% if page_obj.has_next %}
+                    <li><a href="?page={{ page_obj.next_page_number }}" class="page-link"> NEXT &raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</div>
+
+{% endblock %}

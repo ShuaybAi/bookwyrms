@@ -2,6 +2,7 @@
 
 {% url 'home' as home_url %}
 {% url 'book_list' as book_list_url %}
+{% url 'shelves' as shelves_url %}
 {% url 'add_book' as add_book_url %}
 {% url 'my_account' as my_account_url %}
 {% url 'account_login' as login_url %}
@@ -57,9 +58,13 @@
                         <a class="nav-link {% if request.path == home_url %}active{% endif %}"
                             aria-current="page" href="{{ home_url }}">Home</a>
                     </li>
-                    <li class="nav-item">
+                    {% comment %} <li class="nav-item">
                         <a class="nav-link {% if request.path == book_list_url %}active{% endif %}"
                             aria-current="page" href="{{ book_list_url }}">Shelves</a>
+                    </li> {% endcomment %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == shelves_url %}active{% endif %}"
+                            aria-current="page" href="{{ shelves_url }}">Shelves</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">

@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ shelf_user.get_full_name|default:shelf_user.username }}'s Shelf - BookWyrms{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mt-3">
+        <div class="col-12">
+            <a href="{% url 'shelves' %}" class="btn btn-outline-secondary mb-3">
+                <i class="fas fa-arrow-left"></i> Back to All Shelves
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <!-- User Header -->
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div class="d-flex align-items-center">
+                    {% if shelf_user.profile_image %}
+                        <img src="{{ shelf_user.profile_image.url }}" 
+                             class="rounded-circle me-3" 
+                             alt="{{ shelf_user.username }}'s profile"
+                             style="width: 60px; height: 60px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" 
+                             style="width: 60px; height: 60px;">
+                            <i class="fas fa-user fa-2x text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <div>
+                        <h1 class="mb-0">{{ shelf_user.get_full_name|default:shelf_user.username }}'s Complete Shelf</h1>
+                        <small class="text-muted">{{ books.count }} book{{ books.count|pluralize }} • Member since {{ shelf_user.date_joined|date:"M Y" }}</small>
+                    </div>
+                </div>
+            </div>
+
+            {% if shelf_user.bio %}
+                <div class="alert alert-light border-start border-primary border-4 mb-4">
+                    <p class="mb-0"><em>"{{ shelf_user.bio }}"</em></p>
+                </div>
+            {% endif %}
+
+            <!-- Books Grid -->
+            {% if books %}
+                <div class="row g-3">
+                    {% for book in books %}
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="row g-0">
+                                    <div class="col-md-3 col-lg-2 d-flex align-items-center justify-content-center p-3">
+                                        {% if book.cover %}
+                                            <img src="{{ book.cover.url }}"
+                                                alt="{{ book.title }} cover"
+                                                class="img-fluid rounded"
+                                                style="max-height: 250px; width: auto; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                        {% else %}
+                                            <img src="{% static 'images/blank-cover.webp' %}"
+                                                alt="blank cover"
+                                                class="img-fluid rounded"
+                                                style="max-height: 250px; width: auto; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-9 col-lg-10">
+                                        <div class="card-body h-100 d-flex flex-column">
+                                            <div class="flex-grow-1">
+                                                <h4 class="card-title mb-2">{{ book.title }}</h4>
+                                                <p class="text-muted mb-2">by {{ book.author }}</p>
+                                                <div class="mb-2">
+                                                    <span class="badge bg-light text-dark me-2">{{ book.genres|default:"Fiction" }}</span>
+                                                    {% if book.rating %}
+                                                        <span class="text-warning">
+                                                            {% for i in "12345"|make_list %}
+                                                                {% if forloop.counter <= book.rating %}
+                                                                    <i class="fas fa-star"></i>
+                                                                {% else %}
+                                                                    <i class="far fa-star"></i>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="text-muted mb-3" style="max-height: 72px; overflow: hidden;">
+                                                    {{ book.description|default:"No description available."|truncatewords:25|safe }}
+                                                </div>
+                                            </div>
+                                            <div class="mt-auto">
+                                                <a href="{% url 'book_detail' book.pk %}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-book-open me-1"></i>View Details
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% comment %} <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                            <a href="{% url 'book_detail' book.pk %}" class="text-decoration-none">
+                                <div class="card h-100 book-card">
+                                    {% if book.cover %}
+                                        <img src="{{ book.cover.url }}"
+                                            class="card-img-top"
+                                            alt="{{ book.title }} cover"
+                                            style="height: 300px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{% static 'images/blank-cover.webp' %}"
+                                            class="card-img-top"
+                                            alt="blank cover"
+                                            style="height: 300px; object-fit: cover;">
+                                    {% endif %}
+
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title text-dark">{{ book.title }}</h5>
+                                        <p class="card-text text-muted">by {{ book.author }}</p>
+
+                                        {% if book.description %}
+                                            <p class="card-text text-dark">{{ book.description|safe|truncatewords:15 }}</p>
+                                        {% endif %}
+
+                                        <div class="mt-auto">
+                                            <small class="text-muted">
+                                                {% if book.published %}
+                                                    Published: {{ book.published|date:"Y" }}
+                                                {% endif %}
+                                                {% if book.genres %}
+                                                    <br>Genres: {{ book.genres }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div> {% endcomment %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-book fa-4x text-muted mb-3"></i>
+                    <h3>No Books Yet</h3>
+                    <p class="text-muted">{{ shelf_user.get_full_name|default:shelf_user.username }} hasn't added any books to their shelf yet.</p>
+                    <a href="{% url 'shelves' %}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> Back to All Shelves
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
