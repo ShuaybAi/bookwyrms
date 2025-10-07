@@ -3,39 +3,54 @@ from django import forms
 from .models import Book, Review, Comment, CustomUser
 
 
+class BookSearchForm(forms.Form):
+    """Initial form for searching books via Google Books API."""
+    title = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter book title...',
+            'required': True
+        })
+    )
+    author = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter author name (optional)...'
+        })
+    )
+
+
+class BookSelectionForm(forms.Form):
+    """Form for selecting a book from Google Books API results."""
+    selected_book = forms.CharField(widget=forms.HiddenInput())
+    
+    def __init__(self, *args, **kwargs):
+        self.api_results = kwargs.pop('api_results', [])
+        super().__init__(*args, **kwargs)
+
+
 class BookForm(forms.ModelForm):
-    """Form for adding or editing a book."""
+    """Form for adding or editing a book with all fields."""
     class Meta:
         model = Book
-        fields = ['title', 'author']  # Other fields will be added through taking details from api
-        # fields = ['title', 'author', 'published', 'genres', 'cover', 'description']
-        # widgets = {
-        #     'title': forms.TextInput(attrs={
-        #         'class': 'form-control',
-        #         'placeholder': 'Enter book title...'
-        #     }),
-        #     'author': forms.TextInput(attrs={
-        #         'class': 'form-control',
-        #         'placeholder': 'Enter author name...'
-        #     }),
-        #     'published': forms.DateInput(attrs={
-        #         'class': 'form-control',
-        #         'type': 'date'
-        #     }),
-        #     'genres': forms.TextInput(attrs={
-        #         'class': 'form-control',
-        #         'placeholder': 'Fiction, Romance, Mystery...'
-        #     }),
-        #     'cover': forms.FileInput(attrs={
-        #         'class': 'form-control',
-        #         'accept': 'image/*'
-        #     }),
-        #     'description': forms.Textarea(attrs={
-        #         'class': 'form-control',
-        #         'rows': 4,
-        #         'placeholder': 'Enter a brief description of the book...'
-        #     })
-        # }
+        fields = ['title', 'author', 'published', 'genres', 'description', 'cover']
+                 # 'google_books_id', 'isbn', 'publisher', 'page_count', 'rating']  # Commented out for simplified version
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'author': forms.TextInput(attrs={'class': 'form-control'}),
+            'published': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'genres': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'cover': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'})
+            # 'google_books_id': forms.HiddenInput(),
+            # 'isbn': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
+            # 'publisher': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
+            # 'page_count': forms.NumberInput(attrs={'class': 'form-control', 'readonly': True}),
+            # 'rating': forms.NumberInput(attrs={'class': 'form-control', 'readonly': True, 'step': '0.1'})
+        }
 
 class ReviewForm(forms.ModelForm):
     """Form for adding or editing a book review."""

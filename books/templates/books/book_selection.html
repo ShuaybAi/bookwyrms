@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Select Book - BookWyrms{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-4">
+                <a href="{% url 'search_books' %}" class="btn btn-outline-secondary me-3">
+                    <i class="fas fa-arrow-left"></i> Back to Search
+                </a>
+                <div>
+                    <h2 class="mb-0">Select Your Book</h2>
+                    <p class="text-muted mb-0">
+                        Found {{ api_results|length }} result{{ api_results|length|pluralize }} for 
+                        "{{ search_title }}"{% if search_author %} by {{ search_author }}{% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            {% if api_results %}
+                <div class="row g-3">
+                    {% for book in api_results %}
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="row g-0">
+                                    <div class="col-md-2 d-flex align-items-center justify-content-center p-3">
+                                        {% if book.cover_url %}
+                                            <img src="{{ book.cover_url }}" 
+                                                 alt="{{ book.title }} cover" 
+                                                 class="img-fluid rounded"
+                                                 style="max-height: 200px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                        {% else %}
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                                 style="height: 200px; width: 130px;">
+                                                <i class="fas fa-book fa-3x text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div class="card-body h-100 d-flex flex-column">
+                                            <div class="flex-grow-1">
+                                                <h4 class="card-title">{{ book.title }}</h4>
+                                                {% if book.subtitle %}
+                                                    <h6 class="card-subtitle mb-2 text-muted">{{ book.subtitle }}</h6>
+                                                {% endif %}
+                                                <p class="text-muted mb-2">by {{ book.author }}</p>
+                                                
+                                                <div class="row mb-3">
+                                                    {% if book.published %}
+                                                        <div class="col-sm-6 col-md-4 mb-2">
+                                                            <small class="text-muted d-block">Published:</small>
+                                                            <span>{{ book.published }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% comment %} Additional fields commented out for simplified version
+                                                    {% if book.publisher %}
+                                                        <div class="col-sm-6 col-md-4 mb-2">
+                                                            <small class="text-muted d-block">Publisher:</small>
+                                                            <span>{{ book.publisher }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if book.page_count %}
+                                                        <div class="col-sm-6 col-md-4 mb-2">
+                                                            <small class="text-muted d-block">Pages:</small>
+                                                            <span>{{ book.page_count }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if book.isbn %}
+                                                        <div class="col-sm-6 col-md-4 mb-2">
+                                                            <small class="text-muted d-block">ISBN:</small>
+                                                            <span>{{ book.isbn }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% endcomment %}
+                                                </div>
+                                                
+                                                {% if book.genres %}
+                                                    <div class="mb-3">
+                                                        {% comment %} {% for genre in book.genres|split:", " %} {% endcomment %}
+                                                            <span class="badge bg-light text-dark me-1">{{ book.genres }}</span>
+                                                        {% comment %} {% endfor %} {% endcomment %}
+                                                    </div>
+                                                {% endif %}
+                                                
+                                                {% if book.description %}
+                                                    <div class="mb-3">
+                                                        <p class="card-text text-muted" style="max-height: 100px; overflow: hidden;">
+                                                            {% if book.description|length > 300 %}
+                                                                {{ book.description|slice:":300" }}...
+                                                            {% else %}
+                                                                {{ book.description }}
+                                                            {% endif %}
+                                                        </p>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <div class="mt-auto">
+                                                <form method="post" action="{% url 'add_book_from_api' %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="selected_book" value="{{ book.json_data }}">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fas fa-plus me-2"></i>Add This Book to My Shelf
+                                                    </button>
+                                                </form>
+                                                {% if book.info_link %}
+                                                    <a href="{{ book.info_link }}" target="_blank" class="btn btn-outline-secondary ms-2">
+                                                        <i class="fas fa-external-link-alt me-1"></i>View on Google Books
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                    <h3>No Books Found</h3>
+                    <p class="text-muted">We couldn't find any books matching your search criteria.</p>
+                    <a href="{% url 'search_books' %}" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Try Another Search
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <p class="text-muted">
+                Can't find the book you're looking for? Try different search terms or check the spelling.
+                {% comment %} <!-- Manual add option commented out -->
+                <a href="{% url 'add_book_manual' %}" class="text-decoration-none">Add it manually</a>
+                 {% endcomment %}
+            </p>
+        </div>
+    </div>
+</div>
+
+{% comment %} <!-- Book data is now properly JSON serialized using the safe_json filter -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Book data is already properly formatted as JSON from the template filter
+    console.log('Book selection page loaded');
+});
+</script> {% endcomment %}
+
+<!-- Custom template filters -->
+{% load book_extras %}
+{% endblock %}
