@@ -8,7 +8,12 @@ urlpatterns = [
     path('shelves/', views.display_shelves, name='shelves'),
     path('shelves/user/<str:username>-<int:user_id>/', views.user_shelf, name='user_shelf'),
     path('shelves/book/<int:pk>/', views.book_detail, name='book_detail'),
-    path('add-book/', views.add_book, name='add_book'),
+    # Book addition URLs - API search is now primary method
+    path('add-book/', views.search_books, name='add_book'),  # Redirect add-book to API search
+    path('search-books/', views.search_books, name='search_books'),
+    path('search-books-ajax/', views.search_books_ajax, name='search_books_ajax'),
+    path('add-book-from-api/', views.add_book_from_api, name='add_book_from_api'),
+    # path('add-book-manual/', views.add_book, name='add_book_manual'),  # Commented out manual add
     path('my-account/', views.my_account, name='my_account'),
     path('my-account/edit-profile/', views.edit_profile, name='edit_profile'),
     path('my-account/edit-profile/remove-profile-image/',

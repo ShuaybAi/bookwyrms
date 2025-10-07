@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Search Books - BookWyrms{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">
+                        <i class="fas fa-search me-2"></i>Search for Books
+                    </h2>
+                    <p class="text-muted text-center mb-4">
+                        Enter a book title and optionally an author to search Google Books and find the exact book you want to add.
+                    </p>
+                    
+                    <form method="post" id="book-search-form">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Book Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.title.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.author.id_for_label }}" class="form-label">Author (Optional)</label>
+                            {{ form.author }}
+                            {% if form.author.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.author.errors }}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Adding an author will help narrow down the search results.</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-search me-2"></i>Search Books
+                            </button>
+                            {% comment %} <!-- Manual add book option commented out - API search is now primary -->
+                            <a href="{% url 'add_book_manual' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-plus me-2"></i>Add Book Manually
+                            </a>
+                            {% endcomment %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Search Results Section (initially hidden) -->
+            <div id="search-results" class="mt-4" style="display: none;">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <i class="fas fa-list me-2"></i>Search Results
+                        </h4>
+                        <div id="results-container">
+                            <!-- AJAX results will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Loading Spinner -->
+            <div id="loading-spinner" class="text-center mt-4" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Searching...</span>
+                </div>
+                <p class="mt-2 text-muted">Searching Google Books...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('book-search-form');
+    const resultsSection = document.getElementById('search-results');
+    const resultsContainer = document.getElementById('results-container');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    
+    // Enable AJAX search (optional enhancement)
+    form.addEventListener('submit', function(e) {
+        const title = document.getElementById('id_title').value.trim();
+        const author = document.getElementById('id_author').value.trim();
+        
+        if (!title) {
+            return; // Let the form submit normally for validation
+        }
+        
+        // Uncomment below for AJAX search instead of form submission
+        /*
+        e.preventDefault();
+        
+        // Show loading
+        loadingSpinner.style.display = 'block';
+        resultsSection.style.display = 'none';
+        
+        // Make AJAX request
+        fetch('{% url "search_books_ajax" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                title: title,
+                author: author
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingSpinner.style.display = 'none';
+            
+            if (data.success && data.results.length > 0) {
+                displayResults(data.results);
+                resultsSection.style.display = 'block';
+            } else {
+                resultsContainer.innerHTML = '<p class="text-muted">No books found. Please try different search terms.</p>';
+                resultsSection.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            loadingSpinner.style.display = 'none';
+            console.error('Error:', error);
+            resultsContainer.innerHTML = '<p class="text-danger">An error occurred while searching. Please try again.</p>';
+            resultsSection.style.display = 'block';
+        });
+        */
+    });
+    
+    function displayResults(results) {
+        let html = '';
+        results.forEach(book => {
+            html += createBookCard(book);
+        });
+        resultsContainer.innerHTML = html;
+        
+        // Add click handlers for selection
+        document.querySelectorAll('.book-select-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const bookData = this.getAttribute('data-book');
+                addBookFromSelection(bookData);
+            });
+        });
+    }
+    
+    function createBookCard(book) {
+        const coverImage = book.cover_url ? 
+            `<img src="${book.cover_url}" alt="${book.title} cover" class="img-fluid rounded" style="max-height: 150px;">` :
+            `<div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 150px; width: 100px;"><i class="fas fa-book fa-2x text-muted"></i></div>`;
+        
+        return `
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-2 d-flex align-items-center justify-content-center p-3">
+                        ${coverImage}
+                    </div>
+                    <div class="col-md-10">
+                        <div class="card-body">
+                            <h5 class="card-title">${book.title}</h5>
+                            <p class="text-muted mb-2">by ${book.author}</p>
+                            ${book.published ? `<p class="small text-muted mb-2">Published: ${book.published}</p>` : ''}
+                            ${book.genres ? `<p class="small mb-2"><span class="badge bg-light text-dark">${book.genres}</span></p>` : ''}
+                            ${book.description ? `<p class="card-text small">${book.description.substring(0, 200)}${book.description.length > 200 ? '...' : ''}</p>` : ''}
+                            <button class="btn btn-primary btn-sm book-select-btn" data-book='${JSON.stringify(book)}'>
+                                <i class="fas fa-plus me-1"></i>Add This Book
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function addBookFromSelection(bookData) {
+        // Create form and submit
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{% url "add_book_from_api" %}';
+        
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfmiddlewaretoken';
+        csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        form.appendChild(csrfToken);
+        
+        const bookInput = document.createElement('input');
+        bookInput.type = 'hidden';
+        bookInput.name = 'selected_book';
+        bookInput.value = bookData;
+        form.appendChild(bookInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+});
+</script>
+{% endblock %}

@@ -3,10 +3,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 from itertools import groupby
 import cloudinary.uploader
+import json
+from datetime import datetime
 from .models import Book, CustomUser, Review, Comment
-from .forms import BookForm, ReviewForm, CommentForm, UserProfileForm
+from .forms import BookForm, ReviewForm, CommentForm, UserProfileForm, BookSearchForm, BookSelectionForm
+from .services import GoogleBooksService
 
 # Create your views here.
 def home(request):
@@ -65,25 +70,176 @@ def book_detail(request, pk):
     })
 
 @login_required
-def add_book(request):
-    """View to add a new book."""
+def search_books(request):
+    """View to search for books using Google Books API."""
     if request.method == "POST":
-        book_form = BookForm(data=request.POST)
-        if book_form.is_valid():
-            book = book_form.save(commit=False)
-            book.user = request.user  # Assign the current user as the book owner
+        search_form = BookSearchForm(request.POST)
+        if search_form.is_valid():
+            title = search_form.cleaned_data['title']
+            author = search_form.cleaned_data.get('author', '')
+            
+            # Search Google Books API
+            api_results = GoogleBooksService.search_books(title, author)
+            
+            if api_results:
+                # Store results in session for later use
+                request.session['book_search_results'] = api_results
+                
+                # Convert each book dict to JSON string for the template
+                for book in api_results:
+                    book['json_data'] = json.dumps(book)
+                
+                return render(request, 'books/book_selection.html', {
+                    'api_results': api_results,
+                    'search_title': title,
+                    'search_author': author
+                })
+            else:
+                messages.add_message(
+                    request, messages.ERROR,
+                    'No books found with that title and author. Please try different search terms.'
+                )
+    else:
+        search_form = BookSearchForm()
+    
+    return render(request, 'books/search_books.html', {'form': search_form})
+
+
+@login_required
+@require_http_methods(["POST"])
+def search_books_ajax(request):
+    """AJAX endpoint for searching books via Google Books API."""
+    try:
+        data = json.loads(request.body)
+        title = data.get('title', '').strip()
+        author = data.get('author', '').strip()
+        
+        if not title:
+            return JsonResponse({'error': 'Title is required'}, status=400)
+        
+        # Search Google Books API
+        api_results = GoogleBooksService.search_books(title, author, max_results=10)
+        
+        return JsonResponse({
+            'success': True,
+            'results': api_results,
+            'count': len(api_results)
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def add_book_from_api(request):
+    """View to add a book from Google Books API selection."""
+    if request.method == "POST":
+        selected_book_data = request.POST.get('selected_book')
+        
+        if not selected_book_data:
+            messages.add_message(
+                request, messages.ERROR,
+                'No book was selected. Please try again.'
+            )
+            return redirect('search_books')
+        
+        try:
+            # Parse the selected book data
+            print(f"DEBUG: Raw book data: {selected_book_data}")  # Debug line
+            book_data = json.loads(selected_book_data)
+            print(f"DEBUG: Parsed book data: {book_data}")  # Debug line
+            
+            # Create the book instance
+            book = Book(
+                user=request.user,
+                title=book_data.get('title', ''),
+                author=book_data.get('author', ''),
+                description=book_data.get('description', ''),
+                genres=book_data.get('genres', '')
+                # google_books_id=book_data.get('google_books_id', ''),  # Commented out for simplified version
+                # isbn=book_data.get('isbn', ''),
+                # publisher=book_data.get('publisher', ''),
+                # page_count=book_data.get('page_count'),
+                # rating=book_data.get('rating')
+            )
+            
+            # Handle published date
+            if book_data.get('published'):
+                try:
+                    # Parse ISO format date string from API
+                    book.published = datetime.strptime(book_data['published'], '%Y-%m-%d').date()
+                except (ValueError, TypeError):
+                    # Handle different date formats or invalid dates
+                    try:
+                        # Try parsing just year
+                        year = int(book_data['published'][:4])
+                        book.published = datetime(year, 1, 1).date()
+                    except (ValueError, TypeError):
+                        pass
+            
+            # Handle cover image download if URL provided
+            cover_url = book_data.get('cover_url')
+            if cover_url:
+                try:
+                    # Upload the cover image to Cloudinary
+                    upload_result = cloudinary.uploader.upload(
+                        cover_url,
+                        folder="book_covers",
+                        public_id=f"book_api_{request.user.id}_{book.title[:20]}"  # Simplified naming
+                        # public_id=f"book_{book.google_books_id or 'manual'}_{request.user.id}"  # Original with google_books_id
+                    )
+                    book.cover = upload_result['public_id']
+                except Exception as e:
+                    # If cover upload fails, continue without cover
+                    messages.add_message(
+                        request, messages.WARNING,
+                        'Book added successfully, but cover image could not be downloaded.'
+                    )
+            
             book.save()
+            
             messages.add_message(
                 request, messages.SUCCESS,
                 f'"{book.title}" has been added to your shelf!'
             )
             return redirect('book_detail', pk=book.pk)
-    else:
-        book_form = BookForm()
+            
+        except json.JSONDecodeError:
+            messages.add_message(
+                request, messages.ERROR,
+                'Invalid book data. Please try again.'
+            )
+        except Exception as e:
+            messages.add_message(
+                request, messages.ERROR,
+                f'Error adding book: {str(e)}'
+            )
+    
+    return redirect('search_books')
 
-    return render(
-        request,
-        'books/add_book.html', {'form': book_form})
+
+# @login_required
+# def add_book(request):
+#     """Legacy view for manual book addition (kept for backward compatibility)."""
+#     if request.method == "POST":
+#         book_form = BookForm(data=request.POST, files=request.FILES)
+#         if book_form.is_valid():
+#             book = book_form.save(commit=False)
+#             book.user = request.user  # Assign the current user as the book owner
+#             book.save()
+#             messages.add_message(
+#                 request, messages.SUCCESS,
+#                 f'"{book.title}" has been added to your shelf!'
+#             )
+#             return redirect('book_detail', pk=book.pk)
+#     else:
+#         book_form = BookForm()
+
+#     return render(
+#         request,
+#         'books/add_book.html', {'form': book_form})
 
 # def add_review(request, book_id):
 #     """View to add a review to a book."""
