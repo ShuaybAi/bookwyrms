@@ -140,12 +140,14 @@
         </form>
     </div>
 </div>
+{% endblock %}
 
+{% block modals %}
 <!-- Change Password Modal -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header text-white" style="background-color: var(--dark-bg);">
                 <h5 class="modal-title">🔒 Change Password</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>

@@ -90,7 +90,7 @@ def delete_book(request, pk):
         )
         return redirect('shelves')
 
-    return redirect('shelves')
+    return redirect('book_detail', pk=pk)
 
 @login_required
 def search_books(request):

@@ -27,9 +27,9 @@
                 <i class="fas fa-arrow-left"></i> Back to Shelves
             </a>
             {% if user.username == book.user.username %}
-                <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteBookModal">
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteBookModal">
                     <i class="fas fa-trash"></i> Remove From my Shelf
-                </a>
+                </button>
             {% endif %}
         </div>
     </div>
@@ -139,21 +139,39 @@
 </div>
 {% endblock %}
 
+{% block modals %}
 <!-- Delete Book Confirmation Modal -->
 <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="deleteBookModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteBookModalLabel">Confirm Removal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header text-white" style="background-color: var(--dark-bg);">
+                <h5 class="modal-title" id="deleteBookModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Removal
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to remove "<strong>{{ book.title }}</strong>" from your shelf? This action cannot be undone.
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle me-2"></i>
+                    This action cannot be undone.
+                </div>
+                <p class="text-center">
+                    Are you sure you want to remove <strong>"{{ book.title }}"</strong> from your shelf?
+                </p>
+                
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="{% url 'delete_book' book.pk %}" class="btn btn-danger">Yes, Remove</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <form method="post" action="{% url 'delete_book' book.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Yes, Remove
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}

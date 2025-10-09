@@ -147,6 +147,10 @@
         </div>
     </footer>
 
+    {% block modals %}
+    <!-- Modals go here -->
+    {% endblock %}
+
     <!-- Font Awesome kit -->
     <script src="https://kit.fontawesome.com/57c9e736be.js" crossorigin="anonymous"></script>
 
@@ -156,7 +160,10 @@
     <!-- Main JavaScript -->
     <script src="{% static 'js/main.js' %}"></script>
     
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}
+    <!-- Extra JavaScript goes here -->
+    {% endblock %}
+
 </body>
 
 </html>
