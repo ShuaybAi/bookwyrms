@@ -9,8 +9,8 @@ from itertools import groupby
 import cloudinary.uploader
 import json
 from datetime import datetime
-from .models import Book, CustomUser, Review, Comment
-from .forms import BookForm, ReviewForm, CommentForm, UserProfileForm, BookSearchForm, BookSelectionForm
+from .models import Book, CustomUser #, Review, Comment
+from .forms import UserProfileForm, BookSearchForm #, BookForm, ReviewForm, CommentForm, BookSelectionForm
 from .services import GoogleBooksService
 
 # Create your views here.
@@ -27,16 +27,17 @@ class BookList(generic.ListView):
 def display_shelves(request):
     """View to display all book shelves grouped by user with pagination."""
     from django.core.paginator import Paginator
-    from django.db.models import Count
+    from django.db.models import Count, Max
 
     # Get all users who have books, ordered by username for consistency
     users_with_books = CustomUser.objects.filter(
         books__isnull=False
     ).annotate(
-        book_count=Count('books')
-    ).distinct().order_by('username')
+        book_count=Count('books'),
+        last_book_added=Max('books__id')  # Assuming newer books have higher IDs
+    ).distinct().order_by('-last_book_added')  # Most recent first
 
-    # Set up pagination - show 6 users per page
+    # Set up pagination - show 3 users per page
     paginator = Paginator(users_with_books, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -50,7 +51,7 @@ def display_shelves(request):
             'user': user,
             'books': user_books,
             'total_books': all_books_count,
-            'has_more': all_books_count > 3
+            'has_more': all_books_count > 3  # Indicate if there are more than 3 books
         })
 
     return render(request, 'books/shelves.html', {

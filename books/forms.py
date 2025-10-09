@@ -26,7 +26,7 @@ class BookSearchForm(forms.Form):
 class BookSelectionForm(forms.Form):
     """Form for selecting a book from Google Books API results."""
     selected_book = forms.CharField(widget=forms.HiddenInput())
-    
+
     def __init__(self, *args, **kwargs):
         self.api_results = kwargs.pop('api_results', [])
         super().__init__(*args, **kwargs)
