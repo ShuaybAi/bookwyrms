@@ -8,6 +8,7 @@ urlpatterns = [
     path('shelves/', views.display_shelves, name='shelves'),
     path('shelves/user/<str:username>-<int:user_id>/', views.user_shelf, name='user_shelf'),
     path('shelves/book/<int:pk>/', views.book_detail, name='book_detail'),
+    path('shelves/book/<int:pk>/delete/', views.delete_book, name='delete_book'),
     # Book addition URLs - API search is now primary method
     path('add-book/', views.search_books, name='add_book'),  # Redirect add-book to API search
     path('search-books/', views.search_books, name='search_books'),

@@ -26,9 +26,9 @@
             <a href="{% url 'shelves' %}" class="btn btn-outline-primary">
                 <i class="fas fa-arrow-left"></i> Back to Shelves
             </a>
-            {% if user.is_superuser %}
-                <a href="/admin/books/book/{{ book.id }}/change/" class="btn btn-outline-secondary">
-                    <i class="fas fa-edit"></i> Edit Book
+            {% if user.username == book.user.username %}
+                <a href="shelves/book/{{ book.id }}/delete/" class="btn btn-outline-danger">
+                    <i class="fas fa-trash"></i> Remove From my Shelf
                 </a>
             {% endif %}
         </div>

@@ -44,11 +44,9 @@
                                 <h3 class="mb-0">{{ user_group.user.get_full_name|default:user_group.user.username }}'s Shelf</h3>
                                 <small class="text-muted">{{ user_group.total_books }} book{{ user_group.total_books|pluralize }}</small>
                             </div>
-                            {% comment %} {% if user_group.has_more %} {% endcomment %}
-                                <a href="{% url 'user_shelf' user_group.user.username user_group.user.id %}" class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-eye"></i> View All ({{ user_group.total_books }})
-                                </a>
-                            {% comment %} {% endif %} {% endcomment %}
+                            <a href="{% url 'user_shelf' user_group.user.username user_group.user.id %}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i> View All ({{ user_group.total_books }})
+                            </a>
                         </div>
                     </div>
                 </div>
