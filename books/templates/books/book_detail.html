@@ -27,7 +27,7 @@
                 <i class="fas fa-arrow-left"></i> Back to Shelves
             </a>
             {% if user.username == book.user.username %}
-                <a href="shelves/book/{{ book.id }}/delete/" class="btn btn-outline-danger">
+                <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteBookModal">
                     <i class="fas fa-trash"></i> Remove From my Shelf
                 </a>
             {% endif %}

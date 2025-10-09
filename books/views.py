@@ -63,11 +63,34 @@ def book_detail(request, pk):
     return render(request, 'books/book_detail.html', {
         'book': book,
         'user_books': user_books,
+        # commented out for future use
         # 'reviews': reviews,
         # 'comments': comments,
         # 'review_form': ReviewForm(),
         # 'comment_form': CommentForm(),
     })
+
+def delete_book(request, pk):
+    """Delete a book from the user's shelf."""
+    book = get_object_or_404(Book, pk=pk)
+
+    if request.user != book.user:
+        messages.add_message(
+            request, messages.ERROR,
+            'You do not have permission to delete this book.'
+        )
+        return redirect('book_detail', pk=pk)
+
+    if request.method == "POST":
+        title = book.title
+        book.delete()
+        messages.add_message(
+            request, messages.SUCCESS,
+            f'"{title}" has been removed from your shelf.'
+        )
+        return redirect('shelves')
+
+    return redirect('shelves')
 
 @login_required
 def search_books(request):
@@ -77,18 +100,18 @@ def search_books(request):
         if search_form.is_valid():
             title = search_form.cleaned_data['title']
             author = search_form.cleaned_data.get('author', '')
-            
+
             # Search Google Books API
             api_results = GoogleBooksService.search_books(title, author)
-            
+
             if api_results:
                 # Store results in session for later use
                 request.session['book_search_results'] = api_results
-                
+
                 # Convert each book dict to JSON string for the template
                 for book in api_results:
                     book['json_data'] = json.dumps(book)
-                
+
                 return render(request, 'books/book_selection.html', {
                     'api_results': api_results,
                     'search_title': title,
@@ -101,7 +124,7 @@ def search_books(request):
                 )
     else:
         search_form = BookSearchForm()
-    
+
     return render(request, 'books/search_books.html', {'form': search_form})
 
 
@@ -113,19 +136,19 @@ def search_books_ajax(request):
         data = json.loads(request.body)
         title = data.get('title', '').strip()
         author = data.get('author', '').strip()
-        
+
         if not title:
             return JsonResponse({'error': 'Title is required'}, status=400)
-        
+
         # Search Google Books API
         api_results = GoogleBooksService.search_books(title, author, max_results=10)
-        
+
         return JsonResponse({
             'success': True,
             'results': api_results,
             'count': len(api_results)
         })
-        
+
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON data'}, status=400)
     except Exception as e:
@@ -137,20 +160,20 @@ def add_book_from_api(request):
     """View to add a book from Google Books API selection."""
     if request.method == "POST":
         selected_book_data = request.POST.get('selected_book')
-        
+
         if not selected_book_data:
             messages.add_message(
                 request, messages.ERROR,
                 'No book was selected. Please try again.'
             )
             return redirect('search_books')
-        
+
         try:
             # Parse the selected book data
             print(f"DEBUG: Raw book data: {selected_book_data}")  # Debug line
             book_data = json.loads(selected_book_data)
             print(f"DEBUG: Parsed book data: {book_data}")  # Debug line
-            
+
             # Create the book instance
             book = Book(
                 user=request.user,
@@ -158,13 +181,14 @@ def add_book_from_api(request):
                 author=book_data.get('author', ''),
                 description=book_data.get('description', ''),
                 genres=book_data.get('genres', '')
-                # google_books_id=book_data.get('google_books_id', ''),  # Commented out for simplified version
+                # Commented out for simplified version
+                # google_books_id=book_data.get('google_books_id', ''),
                 # isbn=book_data.get('isbn', ''),
                 # publisher=book_data.get('publisher', ''),
                 # page_count=book_data.get('page_count'),
                 # rating=book_data.get('rating')
             )
-            
+
             # Handle published date
             if book_data.get('published'):
                 try:
@@ -178,7 +202,7 @@ def add_book_from_api(request):
                         book.published = datetime(year, 1, 1).date()
                     except (ValueError, TypeError):
                         pass
-            
+
             # Handle cover image download if URL provided
             cover_url = book_data.get('cover_url')
             if cover_url:
@@ -197,15 +221,15 @@ def add_book_from_api(request):
                         request, messages.WARNING,
                         'Book added successfully, but cover image could not be downloaded.'
                     )
-            
+
             book.save()
-            
+
             messages.add_message(
                 request, messages.SUCCESS,
                 f'"{book.title}" has been added to your shelf!'
             )
             return redirect('book_detail', pk=book.pk)
-            
+
         except json.JSONDecodeError:
             messages.add_message(
                 request, messages.ERROR,
@@ -216,7 +240,7 @@ def add_book_from_api(request):
                 request, messages.ERROR,
                 f'Error adding book: {str(e)}'
             )
-    
+
     return redirect('search_books')
 
 
