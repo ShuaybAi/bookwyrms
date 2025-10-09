@@ -25,23 +25,40 @@ class BookList(generic.ListView):
     paginate_by = 5  # Adjust the number of books per page as needed
 
 def display_shelves(request):
-    """View to display all book shelves grouped by user."""
+    """View to display all book shelves grouped by user with pagination."""
+    from django.core.paginator import Paginator
+    from django.db.models import Count
 
-    # Get books ordered by user (already set in model)
-    books = Book.objects.all().select_related('user')
+    # Get all users who have books, ordered by username for consistency
+    users_with_books = CustomUser.objects.filter(
+        books__isnull=False
+    ).annotate(
+        book_count=Count('books')
+    ).distinct().order_by('username')
 
-    # Group books by user and limit to preview (first 3 books)
+    # Set up pagination - show 6 users per page
+    paginator = Paginator(users_with_books, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Group books by user for the current page
     books_by_user = []
-    for user, user_books in groupby(books, key=lambda book: book.user):
-        all_books = list(user_books)
+    for user in page_obj:
+        user_books = Book.objects.filter(user=user).order_by('-id')[:3]  # Show latest 3 books
+        all_books_count = Book.objects.filter(user=user).count()
         books_by_user.append({
             'user': user,
-            'books': all_books[:3],  # Show only first 3 books as preview
-            'total_books': len(all_books),
-            'has_more': len(all_books) > 3
+            'books': user_books,
+            'total_books': all_books_count,
+            'has_more': all_books_count > 3
         })
 
-    return render(request, 'books/shelves.html', {'books_by_user': books_by_user})
+    return render(request, 'books/shelves.html', {
+        'books_by_user': books_by_user,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+        'paginator': paginator
+    })
 
 def user_shelf(request, username, user_id):
     """View to display all books for a specific user."""
