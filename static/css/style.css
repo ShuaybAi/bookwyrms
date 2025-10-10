@@ -1,38 +1,69 @@
 /* BookWyrms Custom Styles */
 
-/* Root Variables */
+/* ========================================
+   CSS CUSTOM PROPERTIES (VARIABLES)
+   ======================================== */
 :root {
+    /* Color Palette */
     --primary-color: #2c3e50;
     --secondary-color: #3498db;
     --accent-color: #e74c3c;
     --text-color: #2c3e50;
-    --title-text-color: #D4AF37; /* Golden yellow */
-    --light-bg: #f5d8b9; /* Warm beige background */
-    --dark-bg: #1C3D2E; /* Dark teal background */
+    --title-text-color: #D4AF37;
+    --light-bg: #f5d8b9;
+    --dark-bg: #1C3D2E;
+    
+    /* Layout & Spacing */
     --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --card-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
     --border-radius: 8px;
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    
+    /* Typography */
+    --font-primary: 'Georgia', serif;
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
 }
 
-/* Body and Typography */
+/* ========================================
+   BASE STYLES
+   ======================================== */
 body {
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-x: hidden;
     background: linear-gradient(to bottom, #e4b51a, #e8d6a1);
-    font-family: 'Georgia', serif;
+    font-family: var(--font-primary);
 }
 
 body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: url('../images/paper-fibers.png'); /* grain texture */
-  background-repeat: repeat;
-  opacity: 0.7; /* subtle grain */
-  pointer-events: none;
-  z-index: -1;
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../images/paper-fibers.png') repeat;
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: -1;
 }
 
-/* Custom Navbar Styling */
+/* Typography */
+h1, h2, h3 {
+    color: var(--primary-color);
+    font-weight: var(--font-weight-semibold);
+}
+
+h1 {
+    color: var(--dark-bg);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* ========================================
+   NAVIGATION
+   ======================================== */
 .navbar {
     background-color: var(--dark-bg);
 }
@@ -46,11 +77,10 @@ body::before {
 }
 
 .navbar-brand {
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     font-size: 1.5rem;
 }
 
-/* Navbar Toggle Button Styling */
 .navbar-toggler {
     border: 1px solid var(--title-text-color);
     border-radius: 4px;
@@ -66,24 +96,37 @@ body::before {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23D4AF37' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-/* Card Enhancements */
+/* ========================================
+   COMPONENTS
+   ======================================== */
+
+/* Cards */
 .card {
     border: none;
     box-shadow: var(--card-shadow);
     border-radius: var(--border-radius);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--card-shadow-hover);
 }
 
 .card-img-top {
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
-/* Button Styling */
+.card-header {
+    color: var(--title-text-color);
+    background-color: var(--dark-bg);
+}
+
+.card-header h2 {
+    color: var(--title-text-color);
+}
+
+/* Buttons */
 .btn-primary {
     background-color: var(--secondary-color);
     border-color: var(--secondary-color);
@@ -99,19 +142,7 @@ body::before {
     margin-right: 0.3rem;
 }
 
-/* Page Headers */
-h1, h2, h3 {
-    color: var(--primary-color);
-    font-weight: 600;
-}
-
-h1 {
-    color: var(--dark-bg);
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-/* Alert Styling */
+/* Alerts */
 .alert {
     border-radius: var(--border-radius);
     border: none;
@@ -122,7 +153,9 @@ h1 {
     color: #0c5460;
 }
 
-/* Footer Styling */
+/* ========================================
+   LAYOUT
+   ======================================== */
 footer {
     position: fixed;
     left: 0;
@@ -135,29 +168,13 @@ footer {
     margin-top: auto;
 }
 
-/* Book Metadata */
-.book-metadata {
-    font-size: 0.85rem;
-    color: #6c757d;
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .container {
-        padding: 0 15px;
-    }
-    
-    h1 {
-        font-size: 2rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .card {
-        margin-bottom: 1.5rem;
-    }
-}
-
-/* Loading Animation */
 .loading {
     display: inline-block;
     width: 20px;
@@ -168,11 +185,9 @@ footer {
     animation: spin 1s ease-in-out infinite;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Utility Classes */
+/* ========================================
+   UTILITIES
+   ======================================== */
 .text-gradient {
     background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
     -webkit-background-clip: text;
@@ -188,19 +203,17 @@ footer {
     border-radius: var(--border-radius);
 }
 
-.card-header {
-    color: var(--title-text-color);
-    background-color: var(--dark-bg);
+.book-metadata {
+    font-size: 0.85rem;
+    color: #6c757d;
 }
 
-.card-header h2 {
-    color: var(--title-text-color);
-}
-
-/* Book Card Links */
+/* ========================================
+   BOOK-SPECIFIC STYLES
+   ======================================== */
 a .book-card {
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
 }
 
 a:hover .book-card {
@@ -208,22 +221,15 @@ a:hover .book-card {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Action Button Container Base Class */
+/* ========================================
+   ACTION BUTTON SYSTEM
+   ======================================== */
 .action-buttons-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 0.75rem;
     flex-wrap: wrap;
-}
-
-/* Action Button Responsive Grid */
-.action-buttons-grid {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
 }
 
 /* Desktop Layout */
@@ -280,7 +286,27 @@ a:hover .book-card {
     }
 }
 
-/* Very Small Screens - Full Stack */
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet and Large Mobile */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .card {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Small Mobile - Action Buttons Full Stack */
 @media (max-width: 480px) {
     .action-buttons-container.profile-layout {
         grid-template-columns: 1fr;
