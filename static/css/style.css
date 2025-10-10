@@ -209,3 +209,73 @@ a:hover .book-card {
     transform: translateY(-8px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
 }
+
+/* Profile Action Buttons Responsive Layout */
+#profile-action-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Desktop: Save and Cancel grouped on left, Password on right */
+@media (min-width: 768px) {
+    #save-btn {
+        margin-right: 0.5rem;
+    }
+    
+    #change-password-btn {
+        margin-left: auto;
+    }
+}
+
+/* Tablet and Mobile: Stack vertically */
+@media (max-width: 767.98px) {
+    #profile-action-buttons {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+            "save save"
+            "cancel password";
+    }
+    
+    #save-btn {
+        grid-area: save;
+        width: 100%;
+    }
+    
+    #cancel-btn {
+        grid-area: cancel;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+    }
+    
+    #change-password-btn {
+        grid-area: password;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+    }
+}
+
+/* Very small screens: Full stack */
+@media (max-width: 480px) {
+    #profile-action-buttons {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "save"
+            "cancel"
+            "password";
+    }
+    
+    #cancel-btn,
+    #change-password-btn {
+        grid-column: 1;
+    }
+}
