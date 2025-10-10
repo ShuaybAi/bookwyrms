@@ -178,19 +178,23 @@
 <!-- Action Buttons -->
 <div class="row mt-4 mb-4">
     <div class="col-12">
-        <div class="d-flex gap-2 flex-wrap">
-            <a href="{% url 'add_book' %}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Add New Book
-            </a>
-            <a href="{% url 'user_shelf' user.username user.id %}" class="btn btn-outline-primary">
-                <i class="fas fa-book"></i> View My Shelf
-            </a>
-            <a href="{% url 'account_logout' %}" class="btn btn-warning">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-            <button type="button" class="btn btn-danger ms-auto" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                <i class="fas fa-exclamation-triangle"></i> Delete Account
-            </button>
+        <div class="card">
+            <div class="card-body">
+                <div id="account-action-buttons">
+                    <a href="{% url 'add_book' %}" class="btn btn-primary btn-lg" id="add-book-btn">
+                        <i class="fas fa-plus"></i> Add New Book
+                    </a>
+                    <a href="{% url 'user_shelf' user.username user.id %}" class="btn btn-outline-primary btn-lg" id="view-shelf-btn">
+                        <i class="fas fa-book"></i> View My Shelf
+                    </a>
+                    <a href="{% url 'account_logout' %}" class="btn btn-warning btn-lg" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                    <button type="button" class="btn btn-danger btn-lg" id="delete-account-btn" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                        <i class="fas fa-exclamation-triangle"></i> Delete Account
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

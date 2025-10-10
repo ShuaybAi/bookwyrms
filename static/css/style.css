@@ -279,3 +279,86 @@ a:hover .book-card {
         grid-column: 1;
     }
 }
+
+/* Account Action Buttons Responsive Layout */
+#account-action-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Desktop: Primary actions on left, destructive actions on right */
+@media (min-width: 768px) {
+    #add-book-btn {
+        margin-right: 0.5rem;
+    }
+    
+    #delete-account-btn {
+        margin-left: auto;
+    }
+}
+
+/* Tablet and Mobile: Stack vertically with grouped actions */
+@media (max-width: 767.98px) {
+    #account-action-buttons {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+            "add-book add-book"
+            "view-shelf logout"
+            "delete delete";
+    }
+    
+    #add-book-btn {
+        grid-area: add-book;
+        width: 100%;
+    }
+    
+    #view-shelf-btn {
+        grid-area: view-shelf;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+    }
+    
+    #logout-btn {
+        grid-area: logout;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+    }
+    
+    #delete-account-btn {
+        grid-area: delete;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+    }
+}
+
+/* Very small screens: Full stack */
+@media (max-width: 480px) {
+    #account-action-buttons {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "add-book"
+            "view-shelf"
+            "logout"
+            "delete";
+    }
+    
+    #view-shelf-btn,
+    #logout-btn,
+    #delete-account-btn {
+        grid-column: 1;
+    }
+}
