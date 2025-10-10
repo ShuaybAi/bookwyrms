@@ -290,7 +290,7 @@ a:hover .book-card {
 }
 
 /* Desktop: Primary actions on left, destructive actions on right */
-@media (min-width: 768px) {
+@media (min-width: 800px) {
     #add-book-btn {
         margin-right: 0.5rem;
     }
@@ -301,7 +301,7 @@ a:hover .book-card {
 }
 
 /* Tablet and Mobile: Stack vertically with grouped actions */
-@media (max-width: 767.98px) {
+@media (max-width: 800px) {
     #account-action-buttons {
         display: grid;
         gap: 0.75rem;
