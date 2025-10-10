@@ -95,6 +95,10 @@ body::before {
     border-color: var(--primary-color);
 }
 
+.btn i {
+    margin-right: 0.3rem;
+}
+
 /* Page Headers */
 h1, h2, h3 {
     color: var(--primary-color);
@@ -204,9 +208,8 @@ a:hover .book-card {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Action Button Containers - Shared Base Styles */
-#profile-action-buttons,
-#account-action-buttons {
+/* Action Button Container Base Class */
+.action-buttons-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -214,83 +217,85 @@ a:hover .book-card {
     flex-wrap: wrap;
 }
 
-/* Desktop Layout - Consolidated */
-@media (min-width: 992px) {
-    #save-btn,
-    #add-book-btn {
-        margin-right: 0.5rem;
-    }
-    
-    #change-password-btn,
-    #delete-account-btn {
-        margin-left: auto;
-    }
+/* Action Button Responsive Grid */
+.action-buttons-grid {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
 }
 
-/* Tablet and Mobile Layout - Consolidated */
+/* Desktop Layout */
+@media (min-width: 992px) {
+    /* Profile buttons: Save and Cancel on left, Change Password on right */
+    .profile-layout .action-primary { margin-right: 0.5rem; }
+    .profile-layout .action-tertiary { margin-left: auto; }
+    
+    /* Account buttons: Add Book on left, Delete Account on right */
+    .account-layout .action-primary { margin-right: 0.5rem; }
+    .account-layout .action-quaternary { margin-left: auto; }
+}
+
+/* Tablet and Mobile Layout */
 @media (max-width: 991.98px) {
-    /* Profile Buttons Grid */
-    #profile-action-buttons {
+    .action-buttons-container {
         display: grid;
         gap: 0.75rem;
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas: 
-            "save save"
-            "cancel password";
     }
     
-    /* Account Buttons Grid */
-    #account-action-buttons {
-        display: grid;
-        gap: 0.75rem;
+    /* Profile Layout (3-button pattern) */
+    .action-buttons-container.profile-layout {
         grid-template-columns: 1fr 1fr;
         grid-template-areas: 
-            "add-book add-book"
-            "view-shelf logout"
-            "delete delete";
+            "primary primary"
+            "secondary tertiary";
     }
     
-    /* Shared Button Styling for Grid Layout */
-    #save-btn,
-    #cancel-btn,
-    #change-password-btn,
-    #add-book-btn,
-    #view-shelf-btn,
-    #logout-btn,
-    #delete-account-btn {
+    /* Account Layout (4-button pattern) */
+    .action-buttons-container.account-layout {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+            "primary primary"
+            "secondary tertiary"
+            "quaternary quaternary";
+    }
+    
+    /* Grid Area Classes */
+    .action-primary { grid-area: primary; }
+    .action-secondary { grid-area: secondary; }
+    .action-tertiary { grid-area: tertiary; }
+    .action-quaternary { grid-area: quaternary; }
+    
+    /* Apply responsive grid styling to all action buttons */
+    .action-primary,
+    .action-secondary, 
+    .action-tertiary,
+    .action-quaternary {
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         min-height: 44px;
     }
-    
-    /* Grid Areas */
-    #save-btn { grid-area: save; }
-    #cancel-btn { grid-area: cancel; }
-    #change-password-btn { grid-area: password; }
-    #add-book-btn { grid-area: add-book; }
-    #view-shelf-btn { grid-area: view-shelf; }
-    #logout-btn { grid-area: logout; }
-    #delete-account-btn { grid-area: delete; }
 }
 
 /* Very Small Screens - Full Stack */
 @media (max-width: 480px) {
-    #profile-action-buttons {
+    .action-buttons-container.profile-layout {
         grid-template-columns: 1fr;
         grid-template-areas: 
-            "save"
-            "cancel"
-            "password";
+            "primary"
+            "secondary"
+            "tertiary";
     }
     
-    #account-action-buttons {
+    .action-buttons-container.account-layout {
         grid-template-columns: 1fr;
         grid-template-areas: 
-            "add-book"
-            "view-shelf"
-            "logout"
-            "delete";
+            "primary"
+            "secondary"
+            "tertiary"
+            "quaternary";
     }
 }

@@ -117,14 +117,14 @@
             <!-- Action Buttons -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <div id="profile-action-buttons">
-                        <button type="submit" class="btn btn-primary btn-lg" id="save-btn">
+                    <div class="action-buttons-container profile-layout">
+                        <button type="submit" class="btn btn-primary btn-lg action-primary">
                             <i class="fas fa-save"></i> Save Changes
                         </button>
-                        <a href="{% url 'my_account' %}" class="btn btn-outline-secondary btn-lg" id="cancel-btn">
+                        <a href="{% url 'my_account' %}" class="btn btn-outline-secondary btn-lg action-secondary">
                             Cancel
                         </a>
-                        <a href="#" class="btn btn-warning" id="change-password-btn" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        <a href="#" class="btn btn-warning action-tertiary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
                             <i class="fas fa-key"></i> Change Password
                         </a>
                     </div>

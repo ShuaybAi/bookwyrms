@@ -180,17 +180,17 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <div id="account-action-buttons">
-                    <a href="{% url 'add_book' %}" class="btn btn-primary btn-lg" id="add-book-btn">
+                <div class="action-buttons-container account-layout">
+                    <a href="{% url 'add_book' %}" class="btn btn-primary btn-lg action-primary">
                         <i class="fas fa-plus"></i> Add New Book
                     </a>
-                    <a href="{% url 'user_shelf' user.username user.id %}" class="btn btn-outline-primary btn-lg" id="view-shelf-btn">
+                    <a href="{% url 'user_shelf' user.username user.id %}" class="btn btn-outline-primary btn-lg action-secondary">
                         <i class="fas fa-book"></i> View My Shelf
                     </a>
-                    <a href="{% url 'account_logout' %}" class="btn btn-warning btn-lg" id="logout-btn">
+                    <a href="{% url 'account_logout' %}" class="btn btn-warning btn-lg action-tertiary">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
-                    <button type="button" class="btn btn-danger btn-lg" id="delete-account-btn" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                    <button type="button" class="btn btn-danger btn-lg action-quaternary" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
                         <i class="fas fa-exclamation-triangle"></i> Delete Account
                     </button>
                 </div>
