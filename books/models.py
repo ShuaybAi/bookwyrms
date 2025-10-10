@@ -18,11 +18,13 @@ class Book(models.Model):
     cover = CloudinaryField('cover', blank=True, null=True)
     genres = models.CharField(max_length=300, blank=True)
     description = models.TextField(blank=True)
-    # google_books_id = models.CharField(max_length=50, blank=True, null=True, help_text="Google Books API volume ID")
+    # google_books_id = models.CharField(max_length=50, blank=True, null=True,
+    #                                     help_text="Google Books API volume ID")
     # isbn = models.CharField(max_length=20, blank=True, null=True, help_text="ISBN number")
     # publisher = models.CharField(max_length=200, blank=True, null=True)
     # page_count = models.IntegerField(blank=True, null=True)
-    # rating = models.FloatField(blank=True, null=True, help_text="Average rating from Google Books")
+    # rating = models.FloatField(blank=True, null=True,
+    #                             help_text="Average rating from Google Books")
     # added_on = models.DateTimeField(auto_now_add=True)
 
     class Meta:

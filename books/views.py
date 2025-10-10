@@ -1,16 +1,19 @@
 """Views for the books app."""
+import json
+from datetime import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
-from itertools import groupby
+from django.core.paginator import Paginator
+from django.db.models import Count, Max
 import cloudinary.uploader
-import json
-from datetime import datetime
-from .models import Book, CustomUser #, Review, Comment
-from .forms import UserProfileForm, BookSearchForm #, BookForm, ReviewForm, CommentForm, BookSelectionForm
+from .models import Book, CustomUser
+                 #, Review, Comment
+from .forms import UserProfileForm, BookSearchForm
+                #, BookForm, ReviewForm, CommentForm, BookSelectionForm
 from .services import GoogleBooksService
 
 # Create your views here.
@@ -26,8 +29,6 @@ class BookList(generic.ListView):
 
 def display_shelves(request):
     """View to display all book shelves grouped by user with pagination."""
-    from django.core.paginator import Paginator
-    from django.db.models import Count, Max
 
     # Get all users who have books, ordered by username for consistency
     users_with_books = CustomUser.objects.filter(
@@ -169,7 +170,7 @@ def search_books_ajax(request):
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-    except Exception as e:
+    except (TypeError, ValueError) as e:
         return JsonResponse({'error': str(e)}, status=500)
 
 
@@ -229,11 +230,13 @@ def add_book_from_api(request):
                     upload_result = cloudinary.uploader.upload(
                         cover_url,
                         folder="book_covers",
-                        public_id=f"book_api_{request.user.id}_{book.title[:20]}"  # Simplified naming
-                        # public_id=f"book_{book.google_books_id or 'manual'}_{request.user.id}"  # Original with google_books_id
+                        # Simplified naming
+                        public_id=f"book_api_{request.user.id}_{str(book.title)[:20]}"
+                        # Original with google_books_id
+                        # public_id=f"book_{book.google_books_id or 'manual'}_{request.user.id}"
                     )
                     book.cover = upload_result['public_id']
-                except Exception as e:
+                except cloudinary.exceptions.Error:
                     # If cover upload fails, continue without cover
                     messages.add_message(
                         request, messages.WARNING,
@@ -253,7 +256,7 @@ def add_book_from_api(request):
                 request, messages.ERROR,
                 'Invalid book data. Please try again.'
             )
-        except Exception as e:
+        except (TypeError, ValueError, cloudinary.exceptions.Error) as e:
             messages.add_message(
                 request, messages.ERROR,
                 f'Error adding book: {str(e)}'

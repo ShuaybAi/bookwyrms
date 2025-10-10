@@ -37,7 +37,8 @@ class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ['title', 'author', 'published', 'genres', 'description', 'cover']
-                 # 'google_books_id', 'isbn', 'publisher', 'page_count', 'rating']  # Commented out for simplified version
+                # Commented out for simplified version
+                # 'google_books_id', 'isbn', 'publisher', 'page_count', 'rating']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'author': forms.TextInput(attrs={'class': 'form-control'}),
@@ -49,7 +50,8 @@ class BookForm(forms.ModelForm):
             # 'isbn': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
             # 'publisher': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
             # 'page_count': forms.NumberInput(attrs={'class': 'form-control', 'readonly': True}),
-            # 'rating': forms.NumberInput(attrs={'class': 'form-control', 'readonly': True, 'step': '0.1'})
+            # 'rating': forms.NumberInput(
+            #     attrs={'class': 'form-control', 'readonly': True, 'step': '0.1'})
         }
 
 class ReviewForm(forms.ModelForm):
