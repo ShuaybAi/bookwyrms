@@ -182,7 +182,7 @@
             <a href="{% url 'add_book' %}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add New Book
             </a>
-            <a href="{% url 'shelves' %}" class="btn btn-outline-primary">
+            <a href="{% url 'user_shelf' user.username user.id %}" class="btn btn-outline-primary">
                 <i class="fas fa-book"></i> View My Shelf
             </a>
             <a href="{% url 'account_logout' %}" class="btn btn-warning">
