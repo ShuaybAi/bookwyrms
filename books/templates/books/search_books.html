@@ -3,6 +3,38 @@
 
 {% block title %}Search Books - BookWyrms{% endblock %}
 
+{% block extra_css %}
+<style>
+    .warning-popover {
+        border: none !important;
+        background: transparent !important;
+    }
+    
+    .warning-popover .popover-body {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: white;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 8px 25px rgba(238, 90, 36, 0.3);
+        border: none;
+    }
+    
+    .warning-popover .popover-arrow::before {
+        border-bottom-color: #ff6b6b !important;
+    }
+    
+    .warning-popover .popover-header {
+        display: none;
+    }
+    
+    #special-warning:hover {
+        text-decoration: underline;
+        transform: scale(1.05);
+        transition: all 0.2s ease;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <div class="row justify-content-center">
@@ -50,6 +82,28 @@
                             {% endcomment %}
                         </div>
                     </form>
+                    
+                    <!-- Disclaimer Section -->
+                    <div class="mt-4 p-3 bg-light rounded border">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-info-circle text-warning me-2"></i>
+                            <strong class="text-dark">Content Policy</strong>
+                        </div>
+                        <p class="text-muted small mb-0">
+                            By adding books to your shelf, you agree that the admin reserves the right to remove inappropriate content. 
+                            Please ensure all book selections are appropriate for a public platform.
+                            <span id="special-warning" 
+                                  class="text-primary fw-bold" 
+                                  style="cursor: pointer;"
+                                  data-bs-toggle="popover" 
+                                  data-bs-placement="bottom" 
+                                  data-bs-trigger="hover focus"
+                                  data-bs-html="true"
+                                  data-bs-content="<div class='text-center'><i class='fas fa-eye fa-2x mb-2'></i><br><strong>I'm watching you Dylan and Callum</strong> 👀</div>">
+                                Terms apply to all users.
+                            </span>
+                        </p>
+                    </div>
                 </div>
             </div>
             
@@ -199,6 +253,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.body.appendChild(form);
         form.submit();
+    }
+    
+    // Initialize Bootstrap popover for the special warning
+    const popoverTrigger = document.getElementById('special-warning');
+    if (popoverTrigger) {
+        new bootstrap.Popover(popoverTrigger, {
+            animation: true,
+            delay: { show: 100, hide: 300 },
+            customClass: 'warning-popover'
+        });
     }
 });
 </script>
