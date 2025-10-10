@@ -15,13 +15,8 @@
 
 /* Body and Typography */
 body {
-    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-color);
-    line-height: 1.6; */
     overflow-x: hidden; /* Prevent horizontal scroll */
-    /* background-color: var(--light-bg); */
     background: linear-gradient(to bottom, #e4b51a, #e8d6a1);
-    /* color: #1C3D2E; /* deep green text */
     font-family: 'Georgia', serif;
 }
 
@@ -40,7 +35,6 @@ body::before {
 /* Custom Navbar Styling */
 .navbar {
     background-color: var(--dark-bg);
-    /* padding: 1rem 2rem; */
 }
 
 .navbar a {
@@ -210,27 +204,32 @@ a:hover .book-card {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Profile Action Buttons Responsive Layout */
-#profile-action-buttons {
+/* Action Button Containers - Shared Base Styles */
+#profile-action-buttons,
+#account-action-buttons {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
-/* Desktop: Save and Cancel grouped on left, Password on right */
-@media (min-width: 768px) {
-    #save-btn {
+/* Desktop Layout - Consolidated */
+@media (min-width: 992px) {
+    #save-btn,
+    #add-book-btn {
         margin-right: 0.5rem;
     }
     
-    #change-password-btn {
+    #change-password-btn,
+    #delete-account-btn {
         margin-left: auto;
     }
 }
 
-/* Tablet and Mobile: Stack vertically */
-@media (max-width: 767.98px) {
+/* Tablet and Mobile Layout - Consolidated */
+@media (max-width: 991.98px) {
+    /* Profile Buttons Grid */
     #profile-action-buttons {
         display: grid;
         gap: 0.75rem;
@@ -240,68 +239,7 @@ a:hover .book-card {
             "cancel password";
     }
     
-    #save-btn {
-        grid-area: save;
-        width: 100%;
-    }
-    
-    #cancel-btn {
-        grid-area: cancel;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 44px;
-    }
-    
-    #change-password-btn {
-        grid-area: password;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 44px;
-    }
-}
-
-/* Very small screens: Full stack */
-@media (max-width: 480px) {
-    #profile-action-buttons {
-        grid-template-columns: 1fr;
-        grid-template-areas: 
-            "save"
-            "cancel"
-            "password";
-    }
-    
-    #cancel-btn,
-    #change-password-btn {
-        grid-column: 1;
-    }
-}
-
-/* Account Action Buttons Responsive Layout */
-#account-action-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-/* Desktop: Primary actions on left, destructive actions on right */
-@media (min-width: 800px) {
-    #add-book-btn {
-        margin-right: 0.5rem;
-    }
-    
-    #delete-account-btn {
-        margin-left: auto;
-    }
-}
-
-/* Tablet and Mobile: Stack vertically with grouped actions */
-@media (max-width: 800px) {
+    /* Account Buttons Grid */
     #account-action-buttons {
         display: grid;
         gap: 0.75rem;
@@ -312,41 +250,41 @@ a:hover .book-card {
             "delete delete";
     }
     
-    #add-book-btn {
-        grid-area: add-book;
-        width: 100%;
-    }
-    
-    #view-shelf-btn {
-        grid-area: view-shelf;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 44px;
-    }
-    
-    #logout-btn {
-        grid-area: logout;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 44px;
-    }
-    
+    /* Shared Button Styling for Grid Layout */
+    #save-btn,
+    #cancel-btn,
+    #change-password-btn,
+    #add-book-btn,
+    #view-shelf-btn,
+    #logout-btn,
     #delete-account-btn {
-        grid-area: delete;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         min-height: 44px;
     }
+    
+    /* Grid Areas */
+    #save-btn { grid-area: save; }
+    #cancel-btn { grid-area: cancel; }
+    #change-password-btn { grid-area: password; }
+    #add-book-btn { grid-area: add-book; }
+    #view-shelf-btn { grid-area: view-shelf; }
+    #logout-btn { grid-area: logout; }
+    #delete-account-btn { grid-area: delete; }
 }
 
-/* Very small screens: Full stack */
+/* Very Small Screens - Full Stack */
 @media (max-width: 480px) {
+    #profile-action-buttons {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "save"
+            "cancel"
+            "password";
+    }
+    
     #account-action-buttons {
         grid-template-columns: 1fr;
         grid-template-areas: 
@@ -354,11 +292,5 @@ a:hover .book-card {
             "view-shelf"
             "logout"
             "delete";
-    }
-    
-    #view-shelf-btn,
-    #logout-btn,
-    #delete-account-btn {
-        grid-column: 1;
     }
 }
