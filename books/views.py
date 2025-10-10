@@ -193,6 +193,17 @@ def add_book_from_api(request):
             book_data = json.loads(selected_book_data)
             print(f"DEBUG: Parsed book data: {book_data}")  # Debug line
 
+            # Check if book already exists for this user
+            existing_book = Book.objects.filter(
+                user=request.user,
+                title__iexact=book_data.get('title', ''),
+                author__iexact=book_data.get('author', '')
+            ).first()
+            
+            if existing_book:
+                messages.warning(request, f"'{book_data.get('title')}' is already in your shelf!")
+                return redirect('search_books')
+
             # Create the book instance
             book = Book(
                 user=request.user,
