@@ -199,7 +199,7 @@ def add_book_from_api(request):
                 title__iexact=book_data.get('title', ''),
                 author__iexact=book_data.get('author', '')
             ).first()
-            
+
             if existing_book:
                 messages.warning(request, f"'{book_data.get('title')}' is already in your shelf!")
                 return redirect('search_books')
