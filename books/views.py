@@ -2,7 +2,6 @@
 import json
 from datetime import datetime
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views import generic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -20,12 +19,6 @@ from .services import GoogleBooksService
 def home(request):
     """View for the homepage."""
     return render(request, 'books/home.html')
-
-class BookList(generic.ListView):
-    """View to list all books."""
-    queryset = Book.objects.all()
-    template_name = 'books/book_list.html'
-    paginate_by = 5  # Adjust the number of books per page as needed
 
 def display_shelves(request):
     """View to display all book shelves grouped by user with pagination."""
@@ -189,9 +182,7 @@ def add_book_from_api(request):
 
         try:
             # Parse the selected book data
-            print(f"DEBUG: Raw book data: {selected_book_data}")  # Debug line
             book_data = json.loads(selected_book_data)
-            print(f"DEBUG: Parsed book data: {book_data}")  # Debug line
 
             # Check if book already exists for this user
             existing_book = Book.objects.filter(
@@ -410,7 +401,7 @@ def delete_account(request):
                     public_id = user.profile_image.public_id
                     cloudinary.uploader.destroy(public_id)
                 except cloudinary.exceptions.Error as e:
-                    print(f"Error deleting profile image from Cloudinary: {e}")
+                    pass
 
             # Note: Django will cascade delete related objects (books, reviews, comments)
             # due to foreign key relationships with on_delete=CASCADE
@@ -426,7 +417,6 @@ def delete_account(request):
             return redirect('home')
 
         except (user.DoesNotExist, cloudinary.exceptions.Error) as e:
-            print(f"Error deleting account for {username}: {e}")
             messages.error(
                 request,
                 'An error occurred while deleting your account. Please try again.'

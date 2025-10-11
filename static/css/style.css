@@ -5,12 +5,9 @@
    ======================================== */
 :root {
     /* Color Palette */
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
-    --text-color: #2c3e50;
+    --primary-btn-color: #2c3e50;
+    --secondary-btn-color: #3498db;
     --title-text-color: #D4AF37;
-    --light-bg: #f5d8b9;
     --dark-bg: #1C3D2E;
     
     /* Layout & Spacing */
@@ -51,7 +48,6 @@ body::before {
 
 /* Typography */
 h1, h2, h3 {
-    color: var(--primary-color);
     font-weight: var(--font-weight-semibold);
 }
 
@@ -128,14 +124,14 @@ h1 {
 
 /* Buttons */
 .btn-primary {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background-color: var(--secondary-btn-color);
+    border-color: var(--secondary-btn-color);
     border-radius: var(--border-radius);
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--primary-btn-color);
+    border-color: var(--primary-btn-color);
 }
 
 .btn i {
