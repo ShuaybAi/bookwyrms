@@ -106,7 +106,7 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">📚 Recent Books</h5>
-                <a href="{% url 'user_shelf' user.username user.id %}" class="btn btn-sm btn-outline-primary">View All</a>
+                <a href="{% url 'user_shelf' user.username user.id %}" class="btn btn-sm btn-primary">View All</a>
             </div>
             <div class="card-body">
                 {% if user.books.all %}
@@ -116,14 +116,14 @@
                                 <div class="card h-100">
                                     {% if book.cover %}
                                         <img src="{{ book.cover.url }}" 
-                                             class="card-img-top" 
-                                             alt="{{ book.title }}"
-                                             style="height: 200px; object-fit: cover;">
+                                            class="card-img-top" 
+                                            alt="{{ book.title }} cover"
+                                            style="height: 250px; object-fit: contain;">
                                     {% else %}
-                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-                                             style="height: 200px;">
-                                            <span class="text-muted">📖</span>
-                                        </div>
+                                        <img src="{% static 'images/blank-cover.webp' %}"
+                                                class="card-img-top"
+                                                alt="blank cover"
+                                                style="height: 250px; object-fit: contain;">
                                     {% endif %}
                                     <div class="card-body">
                                         <h6 class="card-title">{{ book.title|truncatechars:20 }}</h6>

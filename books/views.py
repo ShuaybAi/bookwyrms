@@ -400,7 +400,7 @@ def delete_account(request):
                 try:
                     public_id = user.profile_image.public_id
                     cloudinary.uploader.destroy(public_id)
-                except cloudinary.exceptions.Error as e:
+                except cloudinary.exceptions.Error:
                     pass
 
             # Note: Django will cascade delete related objects (books, reviews, comments)
