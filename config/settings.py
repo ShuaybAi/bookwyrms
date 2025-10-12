@@ -157,6 +157,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # WhiteNoise static file serving
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
+# Cloudinary Configuration
+# Force HTTPS for all Cloudinary URLs to avoid mixed content warnings
+CLOUDINARY_STORAGE = {
+    "SECURE": True,  # Use HTTPS instead of HTTP
+}
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
