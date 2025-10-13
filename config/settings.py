@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
 import dj_database_url
+import cloudinary
 
 if os.path.isfile("env.py"):
     import env  # pylint: disable=unused-import
@@ -159,9 +160,9 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 # Cloudinary Configuration
 # Force HTTPS for all Cloudinary URLs to avoid mixed content warnings
-CLOUDINARY_STORAGE = {
-    "SECURE": True,  # Use HTTPS instead of HTTP
-}
+cloudinary.config(
+    secure=True,  # Use HTTPS instead of HTTP for all URLs
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
